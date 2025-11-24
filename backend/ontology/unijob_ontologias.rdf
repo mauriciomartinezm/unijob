@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:practicas="http://www.ejemplo.org/practicas#">
+
+  <!-- Ontología base -->
+  <owl:Ontology rdf:about="http://www.ejemplo.org/practicas#">
+    <rdfs:comment>
+      Ontología para un sistema de recomendación de prácticas profesionales.
+      Modela estudiantes, competencias, carreras, empresas y oportunidades laborales.
+    </rdfs:comment>
+  </owl:Ontology>
+
+  <!-- Clases principales -->
+  <owl:Class rdf:about="http://www.ejemplo.org/practicas#Estudiante"/>
+  <owl:Class rdf:about="http://www.ejemplo.org/practicas#Carrera"/>
+  <owl:Class rdf:about="http://www.ejemplo.org/practicas#Competencia"/>
+  <owl:Class rdf:about="http://www.ejemplo.org/practicas#Empresa"/>
+  <owl:Class rdf:about="http://www.ejemplo.org/practicas#OportunidadLaboral"/>
+
+  <!-- Propiedades de datos -->
+  <owl:DatatypeProperty rdf:about="http://www.ejemplo.org/practicas#nombre">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.ejemplo.org/practicas#nombreCarrera">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Carrera"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.ejemplo.org/practicas#nombreCompetencia">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Competencia"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.ejemplo.org/practicas#nombreEmpresa">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Empresa"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.ejemplo.org/practicas#descripcionOportunidad">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#OportunidadLaboral"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <!-- Propiedades de objeto (relaciones) -->
+  <owl:ObjectProperty rdf:about="http://www.ejemplo.org/practicas#perteneceACarrera">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.ejemplo.org/practicas#Carrera"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://www.ejemplo.org/practicas#poseeCompetencia">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.ejemplo.org/practicas#Competencia"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://www.ejemplo.org/practicas#requiereCompetencia">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#OportunidadLaboral"/>
+    <rdfs:range rdf:resource="http://www.ejemplo.org/practicas#Competencia"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://www.ejemplo.org/practicas#ofrecidaPor">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#OportunidadLaboral"/>
+    <rdfs:range rdf:resource="http://www.ejemplo.org/practicas#Empresa"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://www.ejemplo.org/practicas#recomendarA">
+    <rdfs:domain rdf:resource="http://www.ejemplo.org/practicas#OportunidadLaboral"/>
+    <rdfs:range rdf:resource="http://www.ejemplo.org/practicas#Estudiante"/>
+  </owl:ObjectProperty>
+
+</rdf:RDF>

@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:practicas="http://www.ejemplo.org/practicas#">
+
+    <!-- ====================== -->
+    <!-- CARRERAS -->
+    <!-- ====================== -->
+
+    <practicas:Carrera rdf:about="http://www.ejemplo.org/practicas#IngSistemas">
+        <practicas:nombreCarrera>Ingeniería de Sistemas</practicas:nombreCarrera>
+    </practicas:Carrera>
+
+    <practicas:Carrera rdf:about="http://www.ejemplo.org/practicas#IngIndustrial">
+        <practicas:nombreCarrera>Ingeniería Industrial</practicas:nombreCarrera>
+    </practicas:Carrera>
+
+    <practicas:Carrera rdf:about="http://www.ejemplo.org/practicas#DisenoGrafico">
+        <practicas:nombreCarrera>Diseño Gráfico</practicas:nombreCarrera>
+    </practicas:Carrera>
+
+    <!-- ====================== -->
+    <!-- COMPETENCIAS -->
+    <!-- ====================== -->
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#Python">
+        <practicas:nombreCompetencia>Programación en Python</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#JavaScript">
+        <practicas:nombreCompetencia>JavaScript y Desarrollo Web</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#SQL">
+        <practicas:nombreCompetencia>Gestión de Bases de Datos SQL</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#ExcelAvanzado">
+        <practicas:nombreCompetencia>Excel Avanzado</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#AnalisisDatos">
+        <practicas:nombreCompetencia>Análisis de Datos</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#DisenoUX">
+        <practicas:nombreCompetencia>Diseño UX/UI</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#ModeladoProcesos">
+        <practicas:nombreCompetencia>Modelado de Procesos</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.ejemplo.org/practicas#RedaccionContenido">
+        <practicas:nombreCompetencia>Redacción de Contenidos</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+
+    <!-- ====================== -->
+    <!-- ESTUDIANTES -->
+    <!-- ====================== -->
+
+    <!-- Juan -->
+    <practicas:Estudiante rdf:about="http://www.ejemplo.org/practicas#Juan">
+        <practicas:nombre>Juan Pérez</practicas:nombre>
+        <practicas:perteneceACarrera rdf:resource="http://www.ejemplo.org/practicas#IngSistemas"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#Python"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#SQL"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#AnalisisDatos"/>
+    </practicas:Estudiante>
+
+    <!-- Maria -->
+    <practicas:Estudiante rdf:about="http://www.ejemplo.org/practicas#Maria">
+        <practicas:nombre>María Gómez</practicas:nombre>
+        <practicas:perteneceACarrera rdf:resource="http://www.ejemplo.org/practicas#DisenoGrafico"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#DisenoUX"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#RedaccionContenido"/>
+    </practicas:Estudiante>
+
+    <!-- Carlos -->
+    <practicas:Estudiante rdf:about="http://www.ejemplo.org/practicas#Carlos">
+        <practicas:nombre>Carlos García</practicas:nombre>
+        <practicas:perteneceACarrera rdf:resource="http://www.ejemplo.org/practicas#IngIndustrial"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#ExcelAvanzado"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#ModeladoProcesos"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.ejemplo.org/practicas#AnalisisDatos"/>
+    </practicas:Estudiante>
+
+
+    <!-- ====================== -->
+    <!-- EMPRESAS -->
+    <!-- ====================== -->
+
+    <practicas:Empresa rdf:about="http://www.ejemplo.org/practicas#DataSoft">
+        <practicas:nombreEmpresa>DataSoft</practicas:nombreEmpresa>
+    </practicas:Empresa>
+
+    <practicas:Empresa rdf:about="http://www.ejemplo.org/practicas#TechCorp">
+        <practicas:nombreEmpresa>TechCorp</practicas:nombreEmpresa>
+    </practicas:Empresa>
+
+    <practicas:Empresa rdf:about="http://www.ejemplo.org/practicas#CreativaStudio">
+        <practicas:nombreEmpresa>Creativa Studio</practicas:nombreEmpresa>
+    </practicas:Empresa>
+
+
+    <!-- ====================== -->
+    <!-- OPORTUNIDADES LABORALES -->
+    <!-- ====================== -->
+
+    <!-- Analista Datos -->
+    <practicas:OportunidadLaboral rdf:about="http://www.ejemplo.org/practicas#AnalistaDatos">
+        <practicas:descripcionOportunidad>Práctica como analista de datos junior</practicas:descripcionOportunidad>
+        <practicas:ofrecidaPor rdf:resource="http://www.ejemplo.org/practicas#DataSoft"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#AnalisisDatos"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#SQL"/>
+    </practicas:OportunidadLaboral>
+
+    <!-- Desarrollador Web -->
+    <practicas:OportunidadLaboral rdf:about="http://www.ejemplo.org/practicas#DesarrolladorWeb">
+        <practicas:descripcionOportunidad>Práctica en desarrollo Frontend</practicas:descripcionOportunidad>
+        <practicas:ofrecidaPor rdf:resource="http://www.ejemplo.org/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#JavaScript"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#Python"/>
+    </practicas:OportunidadLaboral>
+
+    <!-- Diseñador Junior -->
+    <practicas:OportunidadLaboral rdf:about="http://www.ejemplo.org/practicas#DisenadorJunior">
+        <practicas:descripcionOportunidad>Práctica en diseño UX/UI</practicas:descripcionOportunidad>
+        <practicas:ofrecidaPor rdf:resource="http://www.ejemplo.org/practicas#CreativaStudio"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#DisenoUX"/>
+    </practicas:OportunidadLaboral>
+
+    <!-- Auxiliar Procesos -->
+    <practicas:OportunidadLaboral rdf:about="http://www.ejemplo.org/practicas#AuxiliarProcesos">
+        <practicas:descripcionOportunidad>Práctica en gestión de procesos</practicas:descripcionOportunidad>
+        <practicas:ofrecidaPor rdf:resource="http://www.ejemplo.org/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#ModeladoProcesos"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#ExcelAvanzado"/>
+    </practicas:OportunidadLaboral>
+
+    <!-- Redactor Contenido -->
+    <practicas:OportunidadLaboral rdf:about="http://www.ejemplo.org/practicas#ContenidoDigital">
+        <practicas:descripcionOportunidad>Práctica en creación de contenido digital</practicas:descripcionOportunidad>
+        <practicas:ofrecidaPor rdf:resource="http://www.ejemplo.org/practicas#CreativaStudio"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.ejemplo.org/practicas#RedaccionContenido"/>
+    </practicas:OportunidadLaboral>
+
+</rdf:RDF>
