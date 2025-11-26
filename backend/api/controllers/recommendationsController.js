@@ -1,6 +1,6 @@
 import { sparqlQuery } from "../../shared/fuseki-client.js";
 
-const PREFIXES = `PREFIX practicas: <http://www.ejemplo.org/practicas#>
+const PREFIXES = `PREFIX practicas: <http://www.unijob.edu/practicas#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`;
 
 function parseBindings(bindings) {

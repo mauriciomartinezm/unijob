@@ -3,7 +3,7 @@ import { sparqlQuery } from "../../shared/fuseki-client.js";
 export async function generarRecomendaciones(userId) {
     // Use the practicas ontology used in the repository
     const query = `
-        PREFIX practicas: <http://www.ejemplo.org/practicas#>
+    PREFIX practicas: <http://www.unijob.edu/practicas#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
         SELECT ?op (COUNT(?match) AS ?matches) ?descripcion ?empresaName WHERE {

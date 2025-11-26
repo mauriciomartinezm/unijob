@@ -12,7 +12,7 @@ export async function updateUserPreference(data) {
     const { userId, competencia, gusto } = data;
         // Use the project's practicas ontology namespace
         const update = `
-            PREFIX practicas: <http://www.ejemplo.org/practicas#>
+            PREFIX practicas: <http://www.unijob.edu/practicas#>
 
             INSERT DATA {
                 practicas:${userId} practicas:tienePreferencia practicas:${competencia} .

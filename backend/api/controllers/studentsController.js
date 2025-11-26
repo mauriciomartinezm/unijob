@@ -1,6 +1,6 @@
-import { sparqlQuery } from "../../shared/fuseki-client.js";
+import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 
-const PREFIXES = `PREFIX practicas: <http://www.ejemplo.org/practicas#>
+const PREFIXES = `PREFIX practicas: <http://www.unijob.edu/practicas#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`;
 
 function parseBindings(bindings) {
@@ -12,6 +12,7 @@ function parseBindings(bindings) {
 }
 
 export const listStudents = async (req, res) => {
+  console.log("listStudents called");
   try {
     const q = `${PREFIXES}
     SELECT ?student ?nombre ?carreraName WHERE {
@@ -43,5 +44,48 @@ export const getStudent = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error al obtener estudiante" });
+  }
+};
+
+export const createStudent = async (req, res) => {
+  try {
+    const { id, nombre, carrera, competencias } = req.body;
+
+    if (!id || !nombre) {
+      return res.status(400).json({ error: "Falta id o nombre del estudiante" });
+    }
+
+    // Build INSERT DATA triples
+    let triples = `
+      PREFIX practicas: <http://www.unijob.edu/practicas#>
+      INSERT DATA {
+        practicas:${id} a practicas:Estudiante ;
+          practicas:nombre "${nombre}" .
+    `;
+
+    if (carrera) {
+      triples += `
+        practicas:${id} practicas:perteneceACarrera practicas:${carrera} .
+      `;
+    }
+
+    if (Array.isArray(competencias)) {
+      for (const comp of competencias) {
+        triples += `
+          practicas:${id} practicas:poseeCompetencia practicas:${comp} .
+        `;
+      }
+    }
+
+    triples += `
+      }
+    `;
+
+    await sparqlUpdate(triples);
+
+    return res.json({ message: "Estudiante creado correctamente", id });
+  } catch (error) {
+    console.error("Error createStudent:", error);
+    return res.status(500).json({ error: "Error al crear estudiante" });
   }
 };
