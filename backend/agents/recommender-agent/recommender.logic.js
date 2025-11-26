@@ -11,9 +11,9 @@ export async function generarRecomendaciones(userId) {
             practicas:${userId} practicas:poseeCompetencia ?userSkill .
 
             # candidate opportunities
-            ?op rdf:type practicas:OportunidadLaboral .
-            OPTIONAL { ?op practicas:descripcionOportunidad ?descripcion }
-            OPTIONAL { ?op practicas:ofrecidaPor ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
+            ?op rdf:type practicas:OfertaPractica .
+            OPTIONAL { ?op practicas:descripcion ?descripcion }
+            OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
 
             # required skill of opportunity
             ?op practicas:requiereCompetencia ?reqSkill .

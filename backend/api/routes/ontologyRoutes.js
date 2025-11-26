@@ -1,10 +1,10 @@
-// DEPRECATED: ontologyRoutes consolidated into entity-specific routers.
-// Use the following routes instead:
-// - /api/students (studentsRoutes.js)
-// - /api/careers (careersRoutes.js)
-// - /api/opportunities (opportunitiesRoutes.js)
-// - /api/skills (skillsRoutes.js)
-// - /api/recommendBySkills/:id (recommendationsRoutes.js)
+// DEPRECATED: ontologyRoutes consolidado en routers por entidad.
+// Usar las siguientes rutas en español:
+// - /api/estudiantes (studentsRoutes.js)
+// - /api/carreras (careersRoutes.js)
+// - /api/ofertas (opportunitiesRoutes.js)
+// - /api/competencias (skillsRoutes.js)
+// - /api/recomendaciones/:id (recommendationsRoutes.js)
 
 import { Router } from 'express';
 const router = Router();

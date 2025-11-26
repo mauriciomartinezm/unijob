@@ -52,3 +52,55 @@ export const createCareer = async (req, res) => {
     return res.status(500).json({ error: "Error al crear carrera" });
   }
 };
+
+export const updateCareer = async (req, res) => {
+  try {
+    const career = req.params.career;
+    const { nombreCarrera } = req.body;
+
+    if (!career || !nombreCarrera) {
+      return res.status(400).json({ error: "Falta parámetro 'career' o 'nombreCarrera' en el body" });
+    }
+
+    const update = `
+      PREFIX practicas: <http://www.unijob.edu/practicas#>
+      DELETE { practicas:${career} practicas:nombreCarrera ?oldName . }
+      INSERT { practicas:${career} practicas:nombreCarrera "${nombreCarrera}" . }
+      WHERE { OPTIONAL { practicas:${career} practicas:nombreCarrera ?oldName . } }
+    `;
+
+    await sparqlUpdate(update);
+
+    return res.json({ message: "Carrera actualizada correctamente", career, nombreCarrera });
+  } catch (error) {
+    console.error("Error updateCareer:", error);
+    return res.status(500).json({ error: "Error al actualizar carrera" });
+  }
+};
+
+export const deleteCareer = async (req, res) => {
+  try {
+    const career = req.params.career;
+    if (!career) return res.status(400).json({ error: "Falta parámetro 'career'" });
+
+    const update = `
+      PREFIX practicas: <http://www.unijob.edu/practicas#>
+      DELETE {
+        practicas:${career} ?p ?o .
+        ?s ?pred practicas:${career} .
+      }
+      WHERE {
+        { practicas:${career} ?p ?o . }
+        UNION
+        { ?s ?pred practicas:${career} . }
+      }
+    `;
+
+    await sparqlUpdate(update);
+
+    return res.json({ message: "Carrera eliminada correctamente", career });
+  } catch (error) {
+    console.error("Error deleteCareer:", error);
+    return res.status(500).json({ error: "Error al eliminar carrera" });
+  }
+};

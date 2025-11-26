@@ -15,9 +15,9 @@ export const listOpportunities = async (req, res) => {
   try {
     const q = `${PREFIXES}
     SELECT ?op ?descripcion ?empresa ?empresaName ?skill WHERE {
-      ?op rdf:type practicas:OportunidadLaboral .
-      OPTIONAL { ?op practicas:descripcionOportunidad ?descripcion }
-      OPTIONAL { ?op practicas:ofrecidaPor ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
+      ?op rdf:type practicas:OfertaPractica .
+      OPTIONAL { ?op practicas:descripcion ?descripcion }
+      OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
       OPTIONAL { ?op practicas:requiereCompetencia ?skill }
     }`;
 

@@ -66,6 +66,7 @@
     <!-- Juan -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Juan">
         <practicas:nombre>Juan Pérez</practicas:nombre>
+    <practicas:cedula>20123456</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
@@ -75,6 +76,7 @@
     <!-- Maria -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Maria">
         <practicas:nombre>María Gómez</practicas:nombre>
+    <practicas:cedula>20987654</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
@@ -83,6 +85,7 @@
     <!-- Carlos -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Carlos">
         <practicas:nombre>Carlos García</practicas:nombre>
+    <practicas:cedula>20345678</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
@@ -112,41 +115,41 @@
     <!-- ====================== -->
 
     <!-- Analista Datos -->
-    <practicas:OportunidadLaboral rdf:about="http://www.unijob.edu/practicas#AnalistaDatos">
-        <practicas:descripcionOportunidad>Práctica como analista de datos junior</practicas:descripcionOportunidad>
-    <practicas:ofrecidaPor rdf:resource="http://www.unijob.edu/practicas#DataSoft"/>
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#AnalistaDatos">
+        <practicas:descripcion>Práctica como analista de datos junior</practicas:descripcion>
+    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#DataSoft"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
-    </practicas:OportunidadLaboral>
+    </practicas:OfertaPractica>
 
     <!-- Desarrollador Web -->
-    <practicas:OportunidadLaboral rdf:about="http://www.unijob.edu/practicas#DesarrolladorWeb">
-        <practicas:descripcionOportunidad>Práctica en desarrollo Frontend</practicas:descripcionOportunidad>
-    <practicas:ofrecidaPor rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DesarrolladorWeb">
+        <practicas:descripcion>Práctica en desarrollo Frontend</practicas:descripcion>
+    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
-    </practicas:OportunidadLaboral>
+    </practicas:OfertaPractica>
 
     <!-- Diseñador Junior -->
-    <practicas:OportunidadLaboral rdf:about="http://www.unijob.edu/practicas#DisenadorJunior">
-        <practicas:descripcionOportunidad>Práctica en diseño UX/UI</practicas:descripcionOportunidad>
-    <practicas:ofrecidaPor rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DisenadorJunior">
+        <practicas:descripcion>Práctica en diseño UX/UI</practicas:descripcion>
+    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
-    </practicas:OportunidadLaboral>
+    </practicas:OfertaPractica>
 
     <!-- Auxiliar Procesos -->
-    <practicas:OportunidadLaboral rdf:about="http://www.unijob.edu/practicas#AuxiliarProcesos">
-        <practicas:descripcionOportunidad>Práctica en gestión de procesos</practicas:descripcionOportunidad>
-    <practicas:ofrecidaPor rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#AuxiliarProcesos">
+        <practicas:descripcion>Práctica en gestión de procesos</practicas:descripcion>
+    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
-    </practicas:OportunidadLaboral>
+    </practicas:OfertaPractica>
 
     <!-- Redactor Contenido -->
-    <practicas:OportunidadLaboral rdf:about="http://www.unijob.edu/practicas#ContenidoDigital">
-        <practicas:descripcionOportunidad>Práctica en creación de contenido digital</practicas:descripcionOportunidad>
-    <practicas:ofrecidaPor rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#ContenidoDigital">
+        <practicas:descripcion>Práctica en creación de contenido digital</practicas:descripcion>
+    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
     <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
-    </practicas:OportunidadLaboral>
+    </practicas:OfertaPractica>
 
 </rdf:RDF>

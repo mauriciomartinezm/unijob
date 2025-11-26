@@ -3,8 +3,9 @@ import { listStudents, getStudent, createStudent } from '../controllers/students
 
 const router = Router();
 
-router.get('/api/getStudents', listStudents);
-router.get('/api/getStudent/:id', getStudent);
-router.post('/api/students', createStudent);
+// Rutas en español para estudiantes
+router.get('/api/getEstudiantes', listStudents);
+router.get('/api/getEstudiantes/:id', getStudent);
+router.post('/api/createEstudiante', createStudent);
 
 export default router;

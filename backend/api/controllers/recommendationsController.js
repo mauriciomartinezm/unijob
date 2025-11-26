@@ -18,10 +18,10 @@ export const recommendBySkills = async (req, res) => {
 
     const q = `${PREFIXES}
     SELECT ?op (COUNT(?skill) AS ?matches) ?descripcion WHERE {
-      ${subject} practicas:poseeCompetencia ?userSkill .
-      ?op rdf:type practicas:OportunidadLaboral .
-      OPTIONAL { ?op practicas:descripcionOportunidad ?descripcion }
-      ?op practicas:requiereCompetencia ?reqSkill .
+  ${subject} practicas:poseeCompetencia ?userSkill .
+  ?op rdf:type practicas:OfertaPractica .
+  OPTIONAL { ?op practicas:descripcion ?descripcion }
+  ?op practicas:requiereCompetencia ?reqSkill .
       FILTER(?reqSkill = ?userSkill)
     }
     GROUP BY ?op ?descripcion

@@ -22,7 +22,22 @@ export const listStudents = async (req, res) => {
     }`;
 
     const result = await sparqlQuery(q);
-    const rows = parseBindings(result.results.bindings);
+    const rows = parseBindings(result.results.bindings).map(r => {
+      const uri = r.student || null;
+      let identificador = null;
+      if (uri) {
+        // extraer fragmento después de # o la última / como identificador legible
+        const m = uri.match(/[#\/](.+)$/);
+        identificador = m ? m[1] : uri;
+      }
+      return {
+        identificador,
+        uri,
+        nombre: r.nombre || '',
+        carrera: r.carreraName || ''
+      };
+    });
+
     return res.json(rows);
   } catch (error) {
     console.error(error);
@@ -49,41 +64,44 @@ export const getStudent = async (req, res) => {
 
 export const createStudent = async (req, res) => {
   try {
-    const { id, nombre, carrera, competencias } = req.body;
+    const { id, nombre, carrera, competencias, cedula } = req.body;
 
     if (!id || !nombre) {
       return res.status(400).json({ error: "Falta id o nombre del estudiante" });
     }
 
-    // Build INSERT DATA triples
-    let triples = `
-      PREFIX practicas: <http://www.unijob.edu/practicas#>
-      INSERT DATA {
-        practicas:${id} a practicas:Estudiante ;
-          practicas:nombre "${nombre}" .
-    `;
+    // sanitize id to be a safe fragment (replace spaces and bad chars)
+    const safeId = String(id).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+
+    // Build INSERT DATA triples (use practicas: prefix and Spanish property names)
+    // Also store la cédula si fue proporcionada
+    let triples = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nINSERT DATA {\n  practicas:${safeId} a practicas:Estudiante ;\n    practicas:nombre "${String(nombre).replace(/"/g, '\\"')}" .\n`;
+
+    if (cedula) {
+      const safeCedula = String(cedula).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeId} practicas:cedula "${safeCedula}" .\n`;
+    }
 
     if (carrera) {
-      triples += `
-        practicas:${id} practicas:perteneceACarrera practicas:${carrera} .
-      `;
+      const safeCarrera = String(carrera).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+      triples += `  practicas:${safeId} practicas:perteneceACarrera practicas:${safeCarrera} .\n`;
     }
 
     if (Array.isArray(competencias)) {
       for (const comp of competencias) {
-        triples += `
-          practicas:${id} practicas:poseeCompetencia practicas:${comp} .
-        `;
+        if (!comp) continue;
+        const safeComp = String(comp).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+        triples += `  practicas:${safeId} practicas:poseeCompetencia practicas:${safeComp} .\n`;
       }
     }
 
-    triples += `
-      }
-    `;
+    triples += `}`;
 
     await sparqlUpdate(triples);
 
-    return res.json({ message: "Estudiante creado correctamente", id });
+    // return the created resource URI in Spanish
+    const uri = `http://www.unijob.edu/practicas#${safeId}`;
+    return res.json({ mensaje: "Estudiante creado correctamente", id: safeId, uri });
   } catch (error) {
     console.error("Error createStudent:", error);
     return res.status(500).json({ error: "Error al crear estudiante" });
