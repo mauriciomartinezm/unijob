@@ -46,10 +46,11 @@ export default function DatosAcademicos({
 
       const cedula = user.cedula;
       const payload = {
-        // Only include fields that backend recognizes; backend will ignore unknown ones
-        carrera: academicos.carrera,
-        // optionally send a composed nombre if available
         nombre: academicos.nombre || undefined,
+        carrera: academicos.carrera || undefined,
+        universidad: academicos.universidad || undefined,
+        semestre: academicos.semestre || undefined,
+        promedio: academicos.promedio || undefined,
       };
 
       const resp = await fetch(`http://localhost:3001/api/updateEstudiante/${encodeURIComponent(cedula)}`, {

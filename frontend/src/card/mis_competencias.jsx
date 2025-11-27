@@ -192,8 +192,7 @@ export default function MisCompetencias({ competencias, onUpdated }) {
           <thead>
             <tr>
               <th>Competencia</th>
-              <th>Categoría</th>
-              <th>Acciones</th>
+              <th>Acción</th>
             </tr>
           </thead>
 
@@ -201,15 +200,7 @@ export default function MisCompetencias({ competencias, onUpdated }) {
             {localList.map((comp, idx) => (
               <tr key={idx}>
                 <td>{comp.nombre}</td>
-
-                <td>
-                  <span className={`categoria-badge ${(comp.categoria || '').toLowerCase()}`}>
-                    {comp.categoria}
-                  </span>
-                </td>
-
                 <td className="acciones">
-                  <Edit3 className="icon edit" size={18} />
                   <Trash2 className="icon delete" size={18} onClick={() => removeCompetencia(idx)} />
                 </td>
               </tr>
@@ -225,10 +216,14 @@ export default function MisCompetencias({ competencias, onUpdated }) {
             <h3>Selecciona competencias</h3>
             <div className="competencias-list">
               {available.map((a) => (
-                <label key={a.value} className="competencia-option">
-                  <input type="checkbox" checked={selected.has(a.value)} onChange={() => toggleSelect(a.value)} />
+                <button
+                  key={a.value}
+                  type="button"
+                  className={`competencia-option ${selected.has(a.value) ? 'selected' : ''}`}
+                  onClick={() => toggleSelect(a.value)}
+                >
                   <span>{a.label}</span>
-                </label>
+                </button>
               ))}
             </div>
             <div className="modal-actions">

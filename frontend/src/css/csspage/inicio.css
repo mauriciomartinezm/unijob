@@ -17,8 +17,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 60px;
-  height: 100vh;
+  gap: 60px;
+  padding: 60px 60px 40px;
+  min-height: 100vh;
   width: 100%;
   background: var(--bgSolid);
   color: var(--white);
@@ -31,16 +32,16 @@
 }
 
 .hero-text h1 {
-  font-size: 70px;
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
   font-weight: 800;
-  line-height: 1.15;
-  color: var(--white);
+  line-height: 1.1;
   margin: 0;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: shimmer 6s ease-in-out infinite;
+  word-break: break-word;
 }
 
 @keyframes shimmer {
@@ -50,10 +51,11 @@
 
 .hero-text p {
   margin-top: 20px;
-  font-size: 20px;
+  font-size: clamp(1rem, 2.3vw, 1.25rem);
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.55;
   animation: gentlePulse 5s ease-in-out infinite;
+  max-width: 650px;
 }
 
 @keyframes gentlePulse {
@@ -131,6 +133,8 @@
 
 .hero-img-container {
   width: 700px;
+  flex-shrink: 0;
+  max-width: 48%;
 }
 
 .hero-img {
@@ -183,11 +187,13 @@
   margin-top: 50px;
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
 .beneficio-card {
-  width: 300px;
+  flex: 1 1 280px;
+  max-width: 320px;
   padding: 30px;
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
@@ -196,6 +202,9 @@
   box-shadow: 0 10px 30px rgba(2,6,23,0.5);
   color: var(--white);
   animation: cardPop 450ms cubic-bezier(.2,.9,.3,1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @keyframes cardPop{
@@ -216,9 +225,21 @@
   font-size: 16px;
 }
 
+.beneficio-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  backdrop-filter: blur(6px);
+}
+
 .beneficio-icon img {
-  width: 36px;
-  height: auto;
+  max-width: 60%;
+  max-height: 60%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
 }
 
 /* ============================= */
@@ -227,7 +248,7 @@
 
 .funciona-container {
   text-align: center;
-  padding: 100px 60px;
+  padding: 100px 60px 80px;
   background: var(--bgSolid);
   color: var(--white);
 }
@@ -243,11 +264,14 @@
   display: flex;
   justify-content: center;
   gap: 80px;
+  flex-wrap: wrap;
 }
 
 .step-card {
   width: 280px;
   text-align: center;
+  flex: 1 1 240px;
+  max-width: 300px;
 }
 
 .step-number {
@@ -277,13 +301,11 @@
   margin-top: 80px;
   margin-bottom: 80px;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
-  padding: 60px 40px;
-  border-radius: 16px;
+  padding: clamp(40px, 6vw, 60px) clamp(28px,4vw,40px);
+  border-radius: 20px;
   text-align: center;
-  width: 90%;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
+  width: min(100%, 1100px);
+  margin-inline: auto;
   color: white;
   box-shadow: 0 20px 45px rgba(2,6,23,0.6);
 }
@@ -302,11 +324,58 @@
 }
 
 /* Responsive tweaks */
-@media (max-width: 900px) {
-  .hero-container { flex-direction: column; height: auto; padding: 40px }
-  .hero-img-container { width: 100%; margin-top: 24px }
+/* ============ RESPONSIVE BREAKPOINTS ============ */
+@media (max-width: 1200px) {
+  .hero-container { gap: 40px; }
+  .hero-img-container { max-width: 50%; }
 }
-@media (max-width: 600px) {
-  .hero-text h1 { font-size: 40px }
-  .hero-text p { font-size: 18px }
+
+@media (max-width: 1024px) {
+  .hero-container { padding: 50px 46px 40px; }
+  .beneficios-container, .funciona-container { padding: 70px 46px; }
+  .funciona-steps { gap: 60px; }
+}
+
+@media (max-width: 900px) {
+  .hero-container { flex-direction: column; padding: 46px 40px 40px; min-height: auto; }
+  .hero-img-container { max-width: 640px; width: 100%; margin-top: 32px; }
+  .hero-text { text-align: center; }
+  .hero-text p { margin-left: auto; margin-right: auto; }
+}
+
+@media (max-width: 760px) {
+  .beneficios-cards { gap: 24px; }
+  .funciona-steps { gap: 40px; }
+  .cta-final h2 { font-size: 1.75rem; }
+  .cta-final p { font-size: 0.95rem; }
+}
+
+@media (max-width: 640px) {
+  .hero-container { padding: 42px 32px 32px; }
+  .hero-text h1 { line-height: 1.08; }
+  .beneficios-container, .funciona-container { padding: 60px 32px; }
+  .hero-text br { display: none; }
+}
+
+@media (max-width: 520px) {
+  .hero-text h1 { font-size: clamp(2.4rem, 9vw, 3rem); }
+  .hero-text p { font-size: 1rem; }
+  .hero-img { border-radius: 14px; }
+  .step-number { font-size: 34px; }
+  .beneficios-title { font-size: 30px; }
+  .funciona-title { font-size: 30px; }
+}
+
+@media (max-width: 420px) {
+  .hero-container { padding: 38px 24px 30px; }
+  .hero-text h1 { font-size: clamp(2.2rem, 10vw, 2.8rem); }
+  .hero-text p { font-size: 0.95rem; }
+  .beneficio-card { padding: 26px; }
+  .cta-final { padding: 38px 24px; border-radius: 18px; }
+}
+
+@media (max-width: 360px) {
+  .hero-text h1 { font-size: clamp(2rem, 11vw, 2.6rem); }
+  .hero-container { gap: 34px; }
+  .hero-btn, .hero-btnr { width: 100%; text-align: center; }
 }

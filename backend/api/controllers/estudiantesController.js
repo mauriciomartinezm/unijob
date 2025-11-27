@@ -105,9 +105,9 @@ export const updateStudent = async (req, res) => {
   console.log("updateStudent called with id:", req.params.id, "and body:", req.body);
   try {
     const id = req.params.id;
-    const { nombre, carrera, competencias, cedula, telefono, ubicacion } = req.body;
+    const { nombre, carrera, competencias, cedula, telefono, ubicacion, universidad, semestre, promedio } = req.body;
 
-    if (!nombre && !carrera && !competencias && !cedula && !telefono && !ubicacion) {
+    if (!nombre && !carrera && !competencias && !cedula && !telefono && !ubicacion && !universidad && !semestre && !promedio) {
       return res.status(400).json({ error: 'Debe proporcionar al menos un campo para actualizar' });
     }
 
@@ -150,6 +150,24 @@ export const updateStudent = async (req, res) => {
     if (typeof ubicacion !== 'undefined') {
       const safeUbicacion = String(ubicacion).trim().replace(/"/g, '\\"');
       const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:ubicacion ?old . }\nINSERT { ${subjectRef} practicas:ubicacion "${safeUbicacion}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:ubicacion ?old . } }`;
+      await sparqlUpdate(q);
+    }
+
+    if (typeof universidad !== 'undefined') {
+      const safeUniversidad = String(universidad).trim().replace(/"/g, '\\"');
+      const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:universidad ?old . }\nINSERT { ${subjectRef} practicas:universidad "${safeUniversidad}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:universidad ?old . } }`;
+      await sparqlUpdate(q);
+    }
+
+    if (typeof semestre !== 'undefined') {
+      const safeSemestre = String(semestre).trim().replace(/"/g, '\\"');
+      const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:semestre ?old . }\nINSERT { ${subjectRef} practicas:semestre "${safeSemestre}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:semestre ?old . } }`;
+      await sparqlUpdate(q);
+    }
+
+    if (typeof promedio !== 'undefined') {
+      const safePromedio = String(promedio).trim().replace(/"/g, '\\"');
+      const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:promedio ?old . }\nINSERT { ${subjectRef} practicas:promedio "${safePromedio}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:promedio ?old . } }`;
       await sparqlUpdate(q);
     }
 
@@ -231,7 +249,7 @@ export const deleteStudent = async (req, res) => {
 
 export const createStudent = async (req, res) => {
   try {
-    const { nombre, carrera, competencias, cedula, telefono, ubicacion } = req.body;
+    const { nombre, carrera, competencias, cedula, telefono, ubicacion, universidad, semestre, promedio } = req.body;
 
     if (!nombre || !cedula) {
       return res.status(400).json({ error: "Falta nombre o cédula del estudiante" });
@@ -270,6 +288,21 @@ export const createStudent = async (req, res) => {
     if (typeof ubicacion !== 'undefined' && ubicacion) {
       const safeUbicacion = String(ubicacion).trim().replace(/"/g, '\\"');
       triples += `  practicas:${safeCedula} practicas:ubicacion "${safeUbicacion}" .\n`;
+    }
+
+    if (typeof universidad !== 'undefined' && universidad) {
+      const safeUniversidad = String(universidad).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeCedula} practicas:universidad "${safeUniversidad}" .\n`;
+    }
+
+    if (typeof semestre !== 'undefined' && semestre) {
+      const safeSemestre = String(semestre).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeCedula} practicas:semestre "${safeSemestre}" .\n`;
+    }
+
+    if (typeof promedio !== 'undefined' && promedio) {
+      const safePromedio = String(promedio).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeCedula} practicas:promedio "${safePromedio}" .\n`;
     }
 
     if (Array.isArray(competencias)) {

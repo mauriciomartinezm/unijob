@@ -189,3 +189,46 @@ textarea { height: 100px; resize: none }
   border: 4px solid #ffffff;
   box-shadow: 0px 8px 20px rgba(2,6,23,0.45);
 }
+
+/* ================= RESPONSIVE BREAKPOINTS ================= */
+@media (max-width: 1200px) {
+  .perfil-container { padding: 36px; gap: 26px; }
+}
+
+@media (max-width: 992px) {
+  .perfil-container { padding: 32px; gap: 24px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .perfil-left { width: 280px; }
+}
+
+@media (max-width: 860px) {
+  .perfil-container { flex-direction: column; padding: 30px 24px; }
+  .perfil-left { width: 100%; position: static; top: auto; }
+  .perfil-right { width: 100%; }
+  .perfil-img-wrapper { width: 160px; }
+  .perfil-img { width: 160px; height: 160px; }
+}
+
+@media (max-width: 640px) {
+  .perfil-page { padding: 36px 0; }
+  .tabs { gap: 14px; }
+  .tabs button { font-size: 14px; padding-bottom: 8px; }
+  .perfil-nombre { font-size: 20px; }
+  .chips { gap: 6px; }
+  .chip { font-size: 11px; padding: 5px 10px; }
+}
+
+@media (max-width: 520px) {
+  .perfil-img-wrapper { width: 140px; }
+  .perfil-img { width: 140px; height: 140px; }
+  .perfil-container { padding: 26px 18px; }
+  .perfil-left, .perfil-right { padding: 18px; border-radius: 12px; }
+  .btn-container { justify-content: center; }
+}
+
+@media (max-width: 380px) {
+  .tabs { gap: 10px; }
+  .tabs button { font-size: 13px; }
+  label { font-size: 13px; }
+  input, textarea { font-size: 13px; padding: 9px; }
+}

@@ -1,14 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "../css/csscomponentes/nav.css";
-import { Bell } from "lucide-react";
+import { Bell, Menu, X } from "lucide-react";
 import logo2 from "../img/logo2.png";
 import { useUser } from "../context/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isLogged, setIsLogged] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false); // avatar dropdown
+  const [mobileOpen, setMobileOpen] = useState(false); // mobile nav
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const { logout } = useUser() || {};
@@ -40,7 +41,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${mobileOpen ? 'mobile-open' : ''}`}>
 
       {/* IZQUIERDA: LOGO */}
       <div className="nav-left">
@@ -53,6 +54,16 @@ export default function Navbar() {
         <NavLink to="/perfil" className="nav-item">Mi perfil</NavLink>
         <NavLink to="/recomendaciones" className="nav-item">Recomendaciones</NavLink>
       </div>
+
+      {/* TOGGLE MOBILE */}
+      <button
+        className="nav-toggle"
+        aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-expanded={mobileOpen}
+        onClick={() => setMobileOpen(o => !o)}
+      >
+        {mobileOpen ? <X size={26} /> : <Menu size={26} />}
+      </button>
 
       {/* DERECHA: LOGIN o ICONOS */}
       <div className="nav-right">
@@ -80,6 +91,23 @@ export default function Navbar() {
             </div>
           </>
         )}
+      </div>
+
+      {/* MOBILE SLIDE MENU */}
+      <div className={`mobile-menu ${mobileOpen ? 'open' : ''}`}> 
+        <div className="mobile-links">
+          <NavLink onClick={() => setMobileOpen(false)} to="/" className="nav-item">Inicio</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} to="/perfil" className="nav-item">Mi perfil</NavLink>
+          <NavLink onClick={() => setMobileOpen(false)} to="/recomendaciones" className="nav-item">Recomendaciones</NavLink>
+          {!isLogged ? (
+            <>
+              <NavLink onClick={() => setMobileOpen(false)} to="/login" className="nav-item">Iniciar sesión</NavLink>
+              <NavLink onClick={() => setMobileOpen(false)} to="/register" className="nav-item register-btn">Comenzar</NavLink>
+            </>
+          ) : (
+            <button className="nav-item logout-btn" onClick={() => { handleLogout(); setMobileOpen(false); }}>Cerrar sesión</button>
+          )}
+        </div>
       </div>
 
     </nav>

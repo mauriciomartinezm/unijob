@@ -1,12 +1,16 @@
 import equipo from "../img/trabajoeuquipo.jpg";
+import Footer from "../componentes/footer.jsx";
 import "../css/csspage/inicio.css";
 import stonk from "../img/stonk.png";
 import idea from "../img/idea.png";
 import ahorra from "../img/ahorra.png";
 import Navbar from "../componentes/nav.jsx";
+import { useUser } from "../context/UserContext.jsx";
 import { NavLink } from "react-router-dom";
 
 export default function Inicio() {
+  const { user } = useUser() || {};
+  const logged = !!user || localStorage.getItem('isLogged') === 'true';
   return (
     <>
       <Navbar />
@@ -114,18 +118,21 @@ export default function Inicio() {
           </div>
         </div>
 
-        {/* CTA FINAL */}
-        <div className="cta-final">
-          <h2>¿Listo para encontrar la práctica de tus sueños?</h2>
-          <p>
-            Crea tu perfil en minutos y deja que la inteligencia artificial te
-            conecte con tu futuro profesional.
-          </p>
-          <NavLink to="/register" className="hero-btnr navlink-btnr">
-            Registrarse gratis
-          </NavLink>
-        </div>
+        {/* CTA FINAL solo si no está loggeado */}
+        {!logged && (
+          <div className="cta-final">
+            <h2>¿Listo para encontrar la práctica de tus sueños?</h2>
+            <p>
+              Crea tu perfil en minutos y deja que la inteligencia artificial te
+              conecte con tu futuro profesional.
+            </p>
+            <NavLink to="/register" className="hero-btnr navlink-btnr">
+              Registrarse gratis
+            </NavLink>
+          </div>
+        )}
       </div>
+      <Footer />
     </>
   );
 }
