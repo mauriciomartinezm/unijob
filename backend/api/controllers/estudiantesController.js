@@ -1,4 +1,5 @@
 import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
+import { perfilAgent } from "../../agents/profile-agent/index.js";
 
 const PREFIXES = `PREFIX practicas: <http://www.unijob.edu/practicas#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`;
@@ -152,6 +153,23 @@ export const updateStudent = async (req, res) => {
         }
         insertQ += `}`;
         await sparqlUpdate(insertQ);
+        // Emitir evento informativo por cada competencia añadida (no es una "preferencia")
+        try {
+          const userId = id.startsWith('http') ? id.split(/[#\\/]/).pop() : id;
+          for (const comp of competencias) {
+            if (!comp) continue;
+            const safeComp = String(comp).trim().replace(/[^a-zA-Z0-9_\\-]/g, '_');
+            try {
+              // señalamos que el usuario posee/tuvo una competencia, sin tratarla como preferencia
+              perfilAgent.emit('competencia_agregada', { userId, competencia: safeComp });
+            } catch (e) {
+              console.error('Error emitiendo competencia_agregada desde estudiantesController:', e);
+            }
+          }
+          try { perfilAgent.emit('usuario_actualizado', { userId }); } catch (e) { console.error('Error emitiendo usuario_actualizado desde estudiantesController:', e); }
+        } catch (emitErr) {
+          console.error('Error preparando emisión de eventos de competencias (update):', emitErr);
+        }
       }
     }
 
@@ -229,6 +247,25 @@ export const createStudent = async (req, res) => {
     triples += `}`;
 
     await sparqlUpdate(triples);
+
+    // Emitir evento informativo por cada competencia creada (no es una "preferencia")
+    try {
+      const userId = safeCedula;
+      if (Array.isArray(competencias)) {
+        for (const comp of competencias) {
+          if (!comp) continue;
+          const safeComp = String(comp).trim().replace(/[^a-zA-Z0-9_\\-]/g, '_');
+          try {
+            perfilAgent.emit('competencia_agregada', { userId, competencia: safeComp });
+          } catch (e) {
+            console.error('Error emitiendo competencia_agregada desde estudiantesController (create):', e);
+          }
+        }
+      }
+      try { perfilAgent.emit('usuario_actualizado', { userId }); } catch (e) { console.error('Error emitiendo usuario_actualizado desde estudiantesController (create):', e); }
+    } catch (emitErr) {
+      console.error('Error preparando emisión de eventos de competencias (create):', emitErr);
+    }
 
     // return the created resource URI in Spanish
     const uri = `http://www.unijob.edu/practicas#${safeCedula}`;

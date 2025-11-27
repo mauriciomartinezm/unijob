@@ -6,6 +6,7 @@ import carrerasRouter from "./api/routes/carrerasRoutes.js";
 import ofertasRouter from "./api/routes/ofertasRoutes.js";
 import competenciasRouter from "./api/routes/competenciasRoutes.js";
 import recomendacionesRouter from "./api/routes/recomendacionesRoutes.js";
+import profileRouter from "./api/routes/profileRoutes.js";
 import path from "path";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(carrerasRouter);
 app.use(ofertasRouter);
 app.use(competenciasRouter);
 app.use(recomendacionesRouter);
+app.use(profileRouter);
 
 
 // Inicia el servidor

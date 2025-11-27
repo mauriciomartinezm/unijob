@@ -152,4 +152,35 @@
     <rdfs:comment>Especifica la práctica recomendada</rdfs:comment>
   </owl:ObjectProperty>
 
+  <!-- Propiedades para preferencias explícitas del usuario -->
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#ubicacionPreferida">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Ubicación geográfica preferida para la búsqueda de prácticas (ej. ciudad)</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#modalidadPreferida">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Modalidad de trabajo preferida (presencial, remota, híbrida)</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#salarioPreferido">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Rango o cifra del salario preferido para una oferta (guardar como literal)</rdfs:comment>
+  </owl:DatatypeProperty>
+  <!-- Propiedades para feedback de interacciones/recomendaciones -->
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#motivoInteraccion">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Texto libre indicando la razón por la cual el usuario rechazó o comentó una recomendación</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:ObjectProperty rdf:about="http://www.unijob.edu/practicas#reaccionSobre">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.unijob.edu/practicas#OfertaPractica"/>
+    <rdfs:comment>Relaciona la reacción/feedback del estudiante hacia una oferta específica</rdfs:comment>
+  </owl:ObjectProperty>
+
 </rdf:RDF>
