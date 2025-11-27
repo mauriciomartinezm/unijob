@@ -183,4 +183,11 @@
     <rdfs:comment>Relaciona la reacción/feedback del estudiante hacia una oferta específica</rdfs:comment>
   </owl:ObjectProperty>
 
+  <!-- Propiedad para almacenar password hasheada -->
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#contrasenaHash">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Hash de contraseña (scrypt) almacenado como salt$hash en hexadecimal</rdfs:comment>
+  </owl:DatatypeProperty>
+
 </rdf:RDF>
