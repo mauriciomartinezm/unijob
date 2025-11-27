@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { recommendBySkills } from '../controllers/recomendacionesController.js';
+import { recommendByCompetencias } from '../controllers/recomendacionesController.js';
 
 const router = Router();
 
 // Ruta en español para recomendaciones basadas en competencias
-router.get('/api/recomendaciones/:id', recommendBySkills);
+router.get('/api/recomendaciones/:id', recommendByCompetencias);
 
 export default router;

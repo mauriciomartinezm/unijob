@@ -6,23 +6,23 @@ export async function generarRecomendaciones(userId) {
     PREFIX practicas: <http://www.unijob.edu/practicas#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-        SELECT ?op (COUNT(?match) AS ?matches) ?descripcion ?empresaName WHERE {
-            # student's explicit competencies
-            practicas:${userId} practicas:poseeCompetencia ?userSkill .
+        SELECT ?op (COUNT(?matchCompetencia) AS ?matches) ?descripcion ?empresaName WHERE {
+            # student's explicit competencias
+            practicas:${userId} practicas:poseeCompetencia ?userCompetencia .
 
             # candidate opportunities
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
             OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
 
-            # required skill of opportunity
-            ?op practicas:requiereCompetencia ?reqSkill .
+            # required competencia of opportunity
+            ?op practicas:requiereCompetencia ?reqCompetencia .
 
-            # match when required skill equals one of the user's skills
-            FILTER(?reqSkill = ?userSkill)
+            # match when required competencia equals one of the user's competencias
+            FILTER(?reqCompetencia = ?userCompetencia)
 
             # helper binding to count matches
-            BIND(?reqSkill AS ?match)
+            BIND(?reqCompetencia AS ?matchCompetencia)
         }
         GROUP BY ?op ?descripcion ?empresaName
         ORDER BY DESC(?matches)

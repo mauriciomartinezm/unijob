@@ -13,14 +13,39 @@ function parseBindings(bindings) {
 
 export const listCareers = async (req, res) => {
   try {
+    // Obtener todos los predicados/objetos para cada carrera y agrupar por sujeto
     const q = `${PREFIXES}
-    SELECT ?career ?nombreCarrera WHERE {
+    SELECT ?career ?prop ?value WHERE {
       ?career rdf:type practicas:Carrera .
-      OPTIONAL { ?career practicas:nombreCarrera ?nombreCarrera }
-    }`;
+      ?career ?prop ?value .
+    }
+    ORDER BY ?career`;
 
     const result = await sparqlQuery(q);
-    const rows = parseBindings(result.results.bindings);
+    const bindings = parseBindings(result.results.bindings || []);
+
+    const grouped = {};
+    for (const b of bindings) {
+      const uri = b.career || null;
+      if (!uri) continue;
+      if (!grouped[uri]) grouped[uri] = { uri, propiedades: {} };
+
+      const propUri = b.prop || '';
+      const rawValue = b.value || '';
+
+      let propKey = propUri;
+      const practicasNs = 'http://www.unijob.edu/practicas#';
+      if (propUri.startsWith(practicasNs)) propKey = propUri.slice(practicasNs.length);
+      else {
+        const m2 = propUri.match(/[#\/](.+)$/);
+        propKey = m2 ? m2[1] : propUri;
+      }
+
+      if (!grouped[uri].propiedades[propKey]) grouped[uri].propiedades[propKey] = [];
+      grouped[uri].propiedades[propKey].push(rawValue);
+    }
+
+    const rows = Object.values(grouped);
     return res.json(rows);
   } catch (error) {
     console.error(error);

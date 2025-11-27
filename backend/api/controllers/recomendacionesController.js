@@ -11,18 +11,18 @@ function parseBindings(bindings) {
   });
 }
 
-export const recommendBySkills = async (req, res) => {
+export const recommendByCompetencias = async (req, res) => {
   try {
     const id = req.params.id;
     const subject = id.startsWith('http') ? `<${id}>` : `practicas:${id}`;
 
     const q = `${PREFIXES}
-    SELECT ?op (COUNT(?skill) AS ?matches) ?descripcion WHERE {
-  ${subject} practicas:poseeCompetencia ?userSkill .
+    SELECT ?op (COUNT(?reqCompetencia) AS ?matches) ?descripcion WHERE {
+  ${subject} practicas:poseeCompetencia ?userCompetencia .
   ?op rdf:type practicas:OfertaPractica .
   OPTIONAL { ?op practicas:descripcion ?descripcion }
-  ?op practicas:requiereCompetencia ?reqSkill .
-      FILTER(?reqSkill = ?userSkill)
+  ?op practicas:requiereCompetencia ?reqCompetencia .
+      FILTER(?reqCompetencia = ?userCompetencia)
     }
     GROUP BY ?op ?descripcion
     ORDER BY DESC(?matches)

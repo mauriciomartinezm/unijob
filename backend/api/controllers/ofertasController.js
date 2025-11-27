@@ -14,11 +14,11 @@ function parseBindings(bindings) {
 export const listOpportunities = async (req, res) => {
   try {
     const q = `${PREFIXES}
-    SELECT ?op ?descripcion ?empresa ?empresaName ?skill WHERE {
+    SELECT ?op ?descripcion ?empresa ?empresaName ?competencia WHERE {
       ?op rdf:type practicas:OfertaPractica .
       OPTIONAL { ?op practicas:descripcion ?descripcion }
       OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
-      OPTIONAL { ?op practicas:requiereCompetencia ?skill }
+      OPTIONAL { ?op practicas:requiereCompetencia ?competencia }
     }`;
 
     const result = await sparqlQuery(q);
