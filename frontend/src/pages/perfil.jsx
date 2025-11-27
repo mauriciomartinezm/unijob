@@ -4,6 +4,7 @@ import Navbar from "../componentes/nav.jsx";
 import { useUser } from "../context/UserContext.jsx";
 
 // Componentes externos
+import Footer from "../componentes/footer.jsx";
 import InfoPersonal from "../card/info_personal.jsx";
 import DatosAcademicos from "../card/datos_academicos.jsx";
 import Preferencias from "../card/preferencias.jsx";
@@ -246,6 +247,7 @@ export default function MiPerfil() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

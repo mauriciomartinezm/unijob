@@ -1,4 +1,5 @@
 import CardRecomendacion from "../card/card_recomend.jsx";
+import Footer from "../componentes/footer.jsx";
 import Navbar from "../componentes/nav.jsx";
 import "../css/csspage/recomendaciones.css";
 
@@ -57,6 +58,7 @@ export default function Recomendaciones() {
           ))}
         </div>
       </div>
+      <Footer />  
     </>
   );
 }
