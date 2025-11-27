@@ -1,15 +1,18 @@
 /* CONTENEDOR GENERAL DEL TAB */
 .tab-content {
   padding: 20px;
-  background: #fff;
-  border-radius: 12px;
+  background: transparent !important;
+  border-radius: 0;
+  border: 0 !important;
+  color: #ffffff;
+  box-shadow: none !important;
 }
 
 /* TITULO PRINCIPAL */
 .tab-content h2 {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 25px;
 }
 
@@ -17,7 +20,7 @@
 .section-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 15px;
   margin-top: 20px;
 }
@@ -35,7 +38,7 @@
 .empresa-tipos > label {
   display: block;
   font-size: 14px;
-  color: #333;
+  color: #9ca3af;
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -44,16 +47,18 @@
 .form-grid input {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 8px;
   font-size: 14px;
   outline: none;
   transition: 0.2s;
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
 }
 
 .form-grid input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: rgba(124,58,237,0.4);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
 }
 
 /* BOTÓN */
@@ -64,7 +69,7 @@
 }
 
 .btn-actualizar {
-  background-color: #2563eb;
+  background: linear-gradient(90deg, #7c3aed, #4f46e5);
   padding: 10px 22px;
   color: #fff;
   font-size: 14px;
@@ -73,8 +78,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s;
+  box-shadow: 0 6px 18px rgba(124,58,237,0.22);
 }
 
-.btn-actualizar:hover {
-  background-color: #1e4fc7;
-}
+.btn-actualizar:hover { transform: translateY(-2px); }
