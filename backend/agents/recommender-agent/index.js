@@ -34,20 +34,20 @@ class RecommendAgent extends EventEmitter {
             }
         });
 
-                // Escuchar eventos de actualización de perfil para recalcular recomendaciones
+        // Escuchar eventos de actualización de perfil para recalcular recomendaciones
+        try {
+            perfilAgent.on('usuario_actualizado', async ({ userId }) => {
                 try {
-                    perfilAgent.on('usuario_actualizado', async ({ userId }) => {
-                        try {
-                            console.log('🔁 Usuario actualizado, recalculando recomendaciones para', userId);
-                            await generarYpersistirRecomendaciones(userId);
-                            console.log('✅ Recomendaciones recalculadas para', userId);
-                        } catch (err) {
-                            console.error('❌ Error al recalcular recomendaciones para', userId, err);
-                        }
-                    });
-                } catch (e) {
-                    console.error('Error registrando listener usuario_actualizado en RecommendAgent:', e);
+                    console.log('🔁 Usuario actualizado, recalculando recomendaciones para', userId);
+                    await generarYpersistirRecomendaciones(userId);
+                    console.log('✅ Recomendaciones recalculadas para', userId);
+                } catch (err) {
+                    console.error('❌ Error al recalcular recomendaciones para', userId, err);
                 }
+            });
+        } catch (e) {
+            console.error('Error registrando listener usuario_actualizado en RecommendAgent:', e);
+        }
     }
 }
 

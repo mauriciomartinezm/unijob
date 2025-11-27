@@ -60,9 +60,9 @@ export const register = async (req, res) => {
             await sparqlUpdate(insert);
         }
 
-    // Hash password (contrasena) with scrypt + random salt
-    const salt = crypto.randomBytes(16).toString('hex');
-    const derived = crypto.scryptSync(String(contrasena), salt, 64).toString('hex');
+        // Hash password (contrasena) with scrypt + random salt
+        const salt = crypto.randomBytes(16).toString('hex');
+        const derived = crypto.scryptSync(String(contrasena), salt, 64).toString('hex');
         const stored = `${salt}$${derived}`;
 
         // store as practicas:contrasenaHash literal (replace existing)
@@ -93,10 +93,10 @@ export const login = async (req, res) => {
         const stored = row.hash && row.hash.value ? row.hash.value : null;
         if (!stored) return res.status(401).json({ error: 'Usuario sin contraseña' });
 
-    const [salt, hash] = stored.split('$');
+        const [salt, hash] = stored.split('$');
         if (!salt || !hash) return res.status(500).json({ error: 'Formato de contraseña inválido' });
 
-    const derived = crypto.scryptSync(String(contrasena), salt, 64).toString('hex');
+        const derived = crypto.scryptSync(String(contrasena), salt, 64).toString('hex');
         const match = crypto.timingSafeEqual(Buffer.from(derived, 'hex'), Buffer.from(hash, 'hex'));
         if (!match) return res.status(401).json({ error: 'Credenciales inválidas' });
 

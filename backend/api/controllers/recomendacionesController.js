@@ -13,41 +13,6 @@ function parseBindings(bindings) {
   });
 }
 
-export const recommendByCompetencias = async (req, res) => {
-    console.log("recommendByCompetencias called");
-  try {
-    const id = req.params.id;
-    const user = id.startsWith('http') ? id : `http://www.unijob.edu/practicas#${id}`;
-
-    // Read precomputed recommendations stored as Recomendacion nodes
-    const q = `${PREFIXES}
-    SELECT ?rec ?op ?score ?generatedAt ?descripcion WHERE {
-      ?rec practicas:recomendadaPara <${user}> .
-      ?rec practicas:recomienda ?op .
-      OPTIONAL { ?rec practicas:score ?score }
-      OPTIONAL { ?rec practicas:generatedAt ?generatedAt }
-      OPTIONAL { ?rec practicas:descripcion ?descripcion }
-    }
-    ORDER BY DESC(xsd:integer(?score))
-    LIMIT 50`;
-
-    const result = await sparqlQuery(q);
-    const bindings = (result.results && result.results.bindings) ? result.results.bindings : [];
-    const rows = bindings.map(b => ({
-      recommendationNode: b.rec ? b.rec.value : null,
-      opportunity: b.op ? b.op.value : null,
-      score: b.score ? Number(b.score.value) : 0,
-      generatedAt: b.generatedAt ? b.generatedAt.value : null,
-      descripcion: b.descripcion ? b.descripcion.value : null
-    }));
-
-    return res.json({ user: id, recommendations: rows });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Error al obtener recomendaciones precomputadas" });
-  }
-};
-
 // Admin endpoint: recompute and persist recommendations for a user
 export const refreshRecommendations = async (req, res) => {
   try {
