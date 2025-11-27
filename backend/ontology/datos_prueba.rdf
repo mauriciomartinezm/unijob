@@ -63,8 +63,8 @@
     <!-- ESTUDIANTES -->
     <!-- ====================== -->
 
-    <!-- Juan -->
-    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Juan">
+    <!-- Juan (sujeto identificado por cédula) -->
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20123456">
         <practicas:nombre>Juan Pérez</practicas:nombre>
     <practicas:cedula>20123456</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
@@ -73,8 +73,8 @@
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
     </practicas:Estudiante>
 
-    <!-- Maria -->
-    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Maria">
+    <!-- Maria (sujeto identificado por cédula) -->
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20987654">
         <practicas:nombre>María Gómez</practicas:nombre>
     <practicas:cedula>20987654</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
@@ -82,8 +82,8 @@
     <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
     </practicas:Estudiante>
 
-    <!-- Carlos -->
-    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#Carlos">
+    <!-- Carlos (sujeto identificado por cédula) -->
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20345678">
         <practicas:nombre>Carlos García</practicas:nombre>
     <practicas:cedula>20345678</practicas:cedula>
     <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>

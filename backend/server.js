@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import studentsRouter from "./api/routes/studentsRoutes.js";
-import careersRouter from "./api/routes/careersRoutes.js";
-import opportunitiesRouter from "./api/routes/opportunitiesRoutes.js";
-import skillsRouter from "./api/routes/skillsRoutes.js";
-import recommendationsRouter from "./api/routes/recommendationsRoutes.js";
+import estudiantesRouter from "./api/routes/estudiantesRoutes.js";
+import carrerasRouter from "./api/routes/carrerasRoutes.js";
+import ofertasRouter from "./api/routes/ofertasRoutes.js";
+import competenciasRouter from "./api/routes/competenciasRoutes.js";
+import recomendacionesRouter from "./api/routes/recomendacionesRoutes.js";
 import path from "path";
 
 const app = express();
@@ -18,11 +18,11 @@ const PORT = process.env.PORT || 3001;
 // Configuración de CORS
 
 // Configuración del body parser para manejar las solicitudes JSON
-app.use(studentsRouter);
-app.use(careersRouter);
-app.use(opportunitiesRouter);
-app.use(skillsRouter);
-app.use(recommendationsRouter);
+app.use(estudiantesRouter);
+app.use(carrerasRouter);
+app.use(ofertasRouter);
+app.use(competenciasRouter);
+app.use(recomendacionesRouter);
 
 
 // Inicia el servidor
