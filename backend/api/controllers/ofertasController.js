@@ -46,7 +46,13 @@ export const listOpportunities = async (req, res) => {
     }
 
     const rows = Object.values(grouped);
-    return res.json(rows);
+    // Expose common fields at top-level for convenience
+    const mapped = rows.map(r => {
+      const titulo = r.propiedades && r.propiedades.titulo ? r.propiedades.titulo[0] : null;
+      const modalidad = r.propiedades && r.propiedades.modalidad ? r.propiedades.modalidad[0] : null;
+      return { uri: r.uri, titulo, modalidad, propiedades: r.propiedades };
+    });
+    return res.json(mapped);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error al listar oportunidades" });

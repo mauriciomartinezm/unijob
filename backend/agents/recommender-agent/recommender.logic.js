@@ -7,20 +7,25 @@ export async function generarRecomendaciones(userId) {
     PREFIX practicas: <http://www.unijob.edu/practicas#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-        SELECT ?op (COUNT(?matchCompetencia) AS ?matches) ?descripcion ?empresaName WHERE {
-            # student's explicit competencias
-            practicas:${userId} practicas:poseeCompetencia ?userCompetencia .
-
+        SELECT ?op (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName WHERE {
             # candidate opportunities
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
             OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
+            OPTIONAL { ?op practicas:titulo ?titulo }
+            OPTIONAL { ?op practicas:modalidad ?modalidad }
 
-            # required competencia of opportunity
-            ?op practicas:requiereCompetencia ?reqCompetencia .
+            # collect ALL required competencies for the opportunity
+            OPTIONAL { ?op practicas:requiereCompetencia ?allReq . }
 
-            # match when required competencia equals one of the user's competencias
-            FILTER(?reqCompetencia = ?userCompetencia)
+            # student's explicit competencias (used to compute matches)
+            practicas:${userId} practicas:poseeCompetencia ?userCompetencia .
+            # link required competencias that match the student's competencias
+            OPTIONAL {
+                ?op practicas:requiereCompetencia ?reqCompetencia .
+                FILTER(?reqCompetencia = ?userCompetencia)
+                BIND(?reqCompetencia AS ?matchCompetencia)
+            }
 
             # Exclude opportunities that the user explicitly reacted against
             FILTER NOT EXISTS { practicas:${userId} practicas:reaccionSobre ?op . }
@@ -30,11 +35,8 @@ export async function generarRecomendaciones(userId) {
                 practicas:${userId} practicas:tienePreferencia ?reqCompetencia .
                 practicas:${userId} practicas:valorPreferencia "dislike" .
             }
-
-            # helper binding to count matches
-            BIND(?reqCompetencia AS ?matchCompetencia)
         }
-        GROUP BY ?op ?descripcion ?empresaName
+        GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName
         ORDER BY DESC(?matches)
         LIMIT 20
     `;
@@ -43,12 +45,27 @@ export async function generarRecomendaciones(userId) {
 
     // result may be SPARQL JSON; normalize to friendly objects
     const rows = (result.results && result.results.bindings) ? result.results.bindings : [];
-    return rows.map(r => ({
-        opportunity: r.op ? r.op.value : null,
-        matches: r.matches ? Number(r.matches.value) : 0,
-        descripcion: r.descripcion ? r.descripcion.value : null,
-        empresa: r.empresaName ? r.empresaName.value : null
-    }));
+    return rows.map(r => {
+        const rawReq = r.reqCompetencias ? r.reqCompetencias.value : null;
+        const reqArray = rawReq ? rawReq.split('|').map(s => s.trim()).filter(Boolean) : [];
+        // convert full URIs to fragment (after # or /) for convenience
+        const reqFrags = reqArray.map(u => {
+            try {
+                const parts = (u || '').split(/[#\/]/);
+                return parts.length ? parts.pop() : u;
+            } catch (e) { return u; }
+        });
+
+        return {
+            opportunity: r.op ? r.op.value : null,
+            matches: r.matches ? Number(r.matches.value) : 0,
+            requiereCompetencia: reqFrags,
+            titulo: r.titulo ? r.titulo.value : null,
+            descripcion: r.descripcion ? r.descripcion.value : null,
+            modalidad: r.modalidad ? r.modalidad.value : null,
+            nombreEmpresa: r.empresaName ? r.empresaName.value : null
+        };
+    });
 }
 
 /**

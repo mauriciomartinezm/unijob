@@ -17,6 +17,7 @@ export const createInteraction = async (req, res) => {
 };
 
 export const setPreferences = async (req, res) => {
+    console.log('setPreferences called');
     try {
         const data = req.body; // { userId, ubicacion, modalidad, salario }
         if (!data || !data.cedula) return res.status(400).json({ error: 'Falta cedula' });
@@ -102,7 +103,35 @@ export const login = async (req, res) => {
 
         // success - return basic user info (subject uri)
         const subject = row.s && row.s.value ? row.s.value : null;
-        return res.json({ message: 'Login exitoso', user: subject });
+
+        // Fetch all triples for the subject to return a profile object
+        try {
+            let profile = {};
+            if (subject) {
+                const qProfile = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nSELECT ?p ?o WHERE { <${subject}> ?p ?o }`;
+                const rp = await sparqlQuery(qProfile);
+                const bindingsP = rp && rp.results && rp.results.bindings ? rp.results.bindings : [];
+                for (const b of bindingsP) {
+                    const p = b.p && b.p.value ? b.p.value : null;
+                    const o = b.o && b.o.value ? b.o.value : null;
+                    if (!p) continue;
+                    // derive a short key from predicate URI
+                    const key = p.includes('#') ? p.split('#').pop() : p.split('/').pop();
+                    // accumulate multiple values
+                    if (profile[key]) {
+                        if (Array.isArray(profile[key])) profile[key].push(o);
+                        else profile[key] = [profile[key], o];
+                    } else {
+                        profile[key] = o;
+                    }
+                }
+            }
+
+            return res.json({ message: 'Login exitoso', user: subject, profile });
+        } catch (errProfile) {
+            console.error('Error fetching profile after login:', errProfile);
+            return res.json({ message: 'Login exitoso', user: subject });
+        }
     } catch (err) {
         console.error('Error login:', err);
         return res.status(500).json({ error: 'Error en login' });

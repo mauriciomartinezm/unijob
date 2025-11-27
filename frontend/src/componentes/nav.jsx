@@ -1,17 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "../css/csscomponentes/nav.css";
 import { Bell } from "lucide-react";
 import logo2 from "../img/logo2.png";
+import { useUser } from "../context/UserContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isLogged, setIsLogged] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+  const navigate = useNavigate();
+  const { logout } = useUser() || {};
 
   // Cargar estado desde localStorage al iniciar
   useEffect(() => {
     const saved = localStorage.getItem("isLogged");
     setIsLogged(saved === "true");
   }, []);
+
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(e.target)) setShowMenu(false);
+    };
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
+  }, []);
+
+  const handleLogout = () => {
+    try {
+      if (logout) logout();
+    } catch (err) {
+      console.error('Logout error', err);
+    }
+    setIsLogged(false);
+    setShowMenu(false);
+    navigate('/login');
+  };
 
   return (
     <nav className="navbar">
@@ -38,7 +64,20 @@ export default function Navbar() {
         ) : (
           <>
             <Bell className="icon" />
-            <div className="user-circle user-circle-blue"></div>
+            <div style={{ position: 'relative' }} ref={menuRef}>
+              <div
+                className="user-circle user-circle-blue"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu((s) => !s);
+                }}
+              ></div>
+              {showMenu && (
+                <div className="user-menu">
+                  <button className="user-menu-item" onClick={handleLogout}>Cerrar sesión</button>
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>

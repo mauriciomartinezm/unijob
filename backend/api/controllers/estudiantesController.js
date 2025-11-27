@@ -102,11 +102,12 @@ export const getStudent = async (req, res) => {
 };
 
 export const updateStudent = async (req, res) => {
+  console.log("updateStudent called with id:", req.params.id, "and body:", req.body);
   try {
     const id = req.params.id;
-    const { nombre, carrera, competencias, cedula } = req.body;
+    const { nombre, carrera, competencias, cedula, telefono, ubicacion } = req.body;
 
-    if (!nombre && !carrera && !competencias && !cedula) {
+    if (!nombre && !carrera && !competencias && !cedula && !telefono && !ubicacion) {
       return res.status(400).json({ error: 'Debe proporcionar al menos un campo para actualizar' });
     }
 
@@ -137,6 +138,18 @@ export const updateStudent = async (req, res) => {
     if (typeof carrera !== 'undefined') {
       const safeCarrera = String(carrera).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
       const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:perteneceACarrera ?oldC . }\nINSERT { ${subjectRef} practicas:perteneceACarrera practicas:${safeCarrera} . }\nWHERE { OPTIONAL { ${subjectRef} practicas:perteneceACarrera ?oldC . } }`;
+      await sparqlUpdate(q);
+    }
+
+    if (typeof telefono !== 'undefined') {
+      const safeTelefono = String(telefono).trim().replace(/"/g, '\\"');
+      const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:telefono ?old . }\nINSERT { ${subjectRef} practicas:telefono "${safeTelefono}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:telefono ?old . } }`;
+      await sparqlUpdate(q);
+    }
+
+    if (typeof ubicacion !== 'undefined') {
+      const safeUbicacion = String(ubicacion).trim().replace(/"/g, '\\"');
+      const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:ubicacion ?old . }\nINSERT { ${subjectRef} practicas:ubicacion "${safeUbicacion}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:ubicacion ?old . } }`;
       await sparqlUpdate(q);
     }
 
@@ -179,6 +192,19 @@ export const updateStudent = async (req, res) => {
       await sparqlUpdate(q);
     }
 
+    // Notify profile agent that this user's profile changed (use cedula as identifier)
+    try {
+      let userCedula;
+      if (typeof cedula !== 'undefined' && cedula) {
+        userCedula = String(cedula).trim().replace(/"/g, '\\"');
+      } else {
+        userCedula = id.startsWith('http') ? id.split(/[#\/]/).pop() : id;
+      }
+      try { perfilAgent.emit('usuario_actualizado', { cedula: userCedula }); } catch (e) { console.error('Error emitiendo usuario_actualizado desde estudiantesController (final):', e); }
+    } catch (emitErr) {
+      console.error('Error preparando emisión de usuario_actualizado (final):', emitErr);
+    }
+
     return res.json({ mensaje: 'Estudiante actualizado correctamente', sujeto: subjectRef });
   } catch (error) {
     console.error('Error updateStudent:', error);
@@ -205,7 +231,7 @@ export const deleteStudent = async (req, res) => {
 
 export const createStudent = async (req, res) => {
   try {
-    const { nombre, carrera, competencias, cedula } = req.body;
+    const { nombre, carrera, competencias, cedula, telefono, ubicacion } = req.body;
 
     if (!nombre || !cedula) {
       return res.status(400).json({ error: "Falta nombre o cédula del estudiante" });
@@ -234,6 +260,16 @@ export const createStudent = async (req, res) => {
     if (carrera) {
       const safeCarrera = String(carrera).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
       triples += `  practicas:${safeCedula} practicas:perteneceACarrera practicas:${safeCarrera} .\n`;
+    }
+
+    if (typeof telefono !== 'undefined' && telefono) {
+      const safeTelefono = String(telefono).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeCedula} practicas:telefono "${safeTelefono}" .\n`;
+    }
+
+    if (typeof ubicacion !== 'undefined' && ubicacion) {
+      const safeUbicacion = String(ubicacion).trim().replace(/"/g, '\\"');
+      triples += `  practicas:${safeCedula} practicas:ubicacion "${safeUbicacion}" .\n`;
     }
 
     if (Array.isArray(competencias)) {

@@ -1,7 +1,61 @@
 // src/componentes/info_personal.jsx
-import React from "react";
+import React, { useState } from "react";
+import { useUser } from "../context/UserContext.jsx";
 
 export default function InfoPersonal({ form, handleChange }) {
+  const { user, setUser } = useUser() || {};
+  const [status, setStatus] = useState(null);
+
+  const handleActualizar = async () => {
+    setStatus({ saving: true });
+    try {
+      const id = (user && user.cedula) ? user.cedula : form.cedula;
+      if (!id) {
+        setStatus({ error: 'Falta cédula para identificar al estudiante' });
+        return;
+      }
+
+      const payload = {
+        nombre: form.nombre,
+        telefono: form.telefono,
+        ubicacion: form.ubicacion,
+        cedula: form.cedula,
+      };
+
+      const resp = await fetch(`http://localhost:3001/api/updateEstudiante/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const body = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        setStatus({ error: body.error || 'Error al actualizar perfil' });
+        return;
+      }
+
+      // update provider if available
+      try {
+        if (setUser) {
+          const newUser = {
+            uri: body.sujeto || user?.uri || null,
+            cedula: form.cedula || user?.cedula,
+            nombre: form.nombre || user?.nombre,
+            telefono: form.telefono || user?.telefono,
+            ubicacion: form.ubicacion || user?.ubicacion,
+          };
+          setUser(newUser);
+        }
+      } catch (err) {
+        console.warn('No se pudo actualizar provider:', err);
+      }
+
+      setStatus({ ok: true, message: body.mensaje || 'Perfil actualizado' });
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setStatus({ error: 'Error de red al actualizar perfil' });
+    }
+  };
+
   return (
     <div className="tab-content">
       <div className="form-grid">
@@ -15,18 +69,18 @@ export default function InfoPersonal({ form, handleChange }) {
         </div>
 
         <div>
-          <label>Email</label>
+          <label>Cedula</label>
           <input
-            name="email"
-            value={form.email}
+            name="cedula"
+            value={form.cedula}
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <label>Cedula</label>
+          <label>Teléfono</label>
           <input
-            name="cedula"
+            name="telefono"
             value={form.telefono}
             onChange={handleChange}
           />
@@ -42,15 +96,11 @@ export default function InfoPersonal({ form, handleChange }) {
         </div>
       </div>
 
-      <label>Resumen Profesional</label>
-      <textarea
-        name="resumen"
-        value={form.resumen}
-        onChange={handleChange}
-      />
-
       <div className="btn-container">
-        <button className="btn-actualizar">Actualizar perfil</button>
+        <button className="btn-actualizar" onClick={handleActualizar}>Actualizar perfil</button>
+        {status && status.saving && <span className="status-msg">Guardando...</span>}
+        {status && status.error && <span className="status-msg error">{status.error}</span>}
+        {status && status.ok && <span className="status-msg ok">{status.message}</span>}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useUser } from "../context/UserContext.jsx";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import "../css/csspage/register.css";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ export default function Register() {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
-    email: "",
+    cedula: "",
     password: "",
     confirm: "",
   });
@@ -21,11 +22,14 @@ export default function Register() {
     setForm((s) => ({ ...s, [name]: value }));
   };
 
-  const validateEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email);
+  const validateCedula = (cedula) => {
+    // simple non-empty validation; adapt if you want numeric-only or specific format
+    return /\S+/.test(cedula);
   };
 
-  const handleRegister = (e) => {
+  const { setUser } = useUser();
+
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -33,8 +37,8 @@ export default function Register() {
       setError("Por favor ingresa nombre y apellido.");
       return;
     }
-    if (!validateEmail(form.email)) {
-      setError("Por favor ingresa un email válido.");
+    if (!validateCedula(form.cedula)) {
+      setError("Por favor ingresa una cedula válida.");
       return;
     }
     if (form.password.length < 6) {
@@ -46,34 +50,38 @@ export default function Register() {
       return;
     }
 
-    // Guardar en localStorage (simulación de base de datos local)
+    // Enviar al backend
     try {
-      const usersJson = localStorage.getItem("users") || "[]";
-      const users = JSON.parse(usersJson);
-      // opcional: comprobar que no exista el email
-      const exists = users.find((u) => u.email === form.email);
-      if (exists) {
-        setError("Ya existe una cuenta con ese correo.");
+      const payload = {
+        cedula: form.cedula,
+        contrasena: form.password,
+        nombre: `${form.nombre} ${form.apellido}`,
+      };
+      console.log('Register payload:', payload);
+      const resp = await fetch('http://localhost:3001/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const body = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        setError(body.error || body.message || 'Error en registro');
         return;
       }
 
-      const newUser = {
-        nombre: form.nombre,
-        apellido: form.apellido,
-        email: form.email,
-        password: form.password,
+      // éxito: persistir en provider
+      const userObj = {
+        uri: body.user || null,
+        cedula: form.cedula,
+        nombre: `${form.nombre} ${form.apellido}`,
       };
-
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-      // marcar como no logueado por defecto o cambiar según la lógica deseada
-      localStorage.setItem("isLogged", "true");
-
-      // redirigir al inicio
-      navigate("/");
+      if (setUser) setUser(userObj);
+      localStorage.setItem('isLogged', 'true');
+      navigate('/');
     } catch (err) {
-      setError("Ocurrió un error al guardar el usuario.");
-      console.error(err);
+      console.error('Register error:', err);
+      setError('Ocurrió un error al registrar el usuario.');
     }
   };
 
@@ -113,15 +121,15 @@ export default function Register() {
           />
         </div>
 
-        <label className="register-label">Correo</label>
+        <label className="register-label">Cedula</label>
         <div className="register-input-group">
           <Mail className="register-icon" />
           <input
-            name="email"
-            value={form.email}
+            name="cedula"
+            value={form.cedula}
             onChange={handleChange}
-            type="email"
-            placeholder="Ingresa tu correo"
+            type="text"
+            placeholder="Ingresa tu cedula"
             className="register-input"
           />
         </div>

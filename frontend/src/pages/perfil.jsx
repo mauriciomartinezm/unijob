@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/csspage/perfil.css";
 import Navbar from "../componentes/nav.jsx";
+import { useUser } from "../context/UserContext.jsx";
 
 // Componentes externos
 import InfoPersonal from "../card/info_personal.jsx";
@@ -16,30 +17,84 @@ export default function MiPerfil() {
 
   const [profileImage, setProfileImage] = useState(defaultImage);
 
+  const { user } = useUser();
+
   const [form, setForm] = useState({
-    nombre: "Ana García",
-    email: "ana.garcia@email.com",
-    telefono: "1213313",
-    ubicacion: "Ciudad de México, México",
+    nombre: user?.nombre || "",
+    cedula: user?.cedula || "",
+    email: "",
+    telefono: user?.telefono || "",
+    ubicacion: user?.ubicacion || "",
     resumen: "",
   });
 
-  const [academicos, setAcademicos] = useState({
-    universidad: "Universidad Politécnica Nacional",
-    carrera: "Ingeniería de Software",
-    semestre: "8",
-    promedio: "3.9",
+  useEffect(() => {
+    if (user) {
+      setForm((f) => ({
+        ...f,
+        nombre: user.nombre || f.nombre,
+        cedula: user.cedula || f.cedula,
+        telefono: user.telefono || f.telefono,
+        ubicacion: user.ubicacion || f.ubicacion,
+      }));
+    }
+  }, [user]);
 
-    industria: "Tecnología, Consultoría",
-    rol: "Desarrollo Full-Stack, Project Manager",
-    ubicacion_preferida: "Remoto, Híbrido (CDMX)",
-    tipo_empresa: {
-      startup: true,
-      corporativo: false,
-      scaleup: true,
-      ong: false,
-      gobierno: false,
-    },
+  // Load full student profile (preferences, carrera, etc.) from backend
+  const loadProfile = async () => {
+    if (!user || !user.cedula) return;
+    try {
+      const resp = await fetch(`http://localhost:3001/api/getEstudiante/${encodeURIComponent(user.cedula)}`);
+      if (!resp.ok) return;
+      const stu = await resp.json().catch(() => ({}));
+
+      const props = (stu && stu.propiedades) ? stu.propiedades : {};
+
+      // preferencias: ubicacionPreferida, modalidadPreferida, salarioPreferido
+      const ubicPref = Array.isArray(props.ubicacionPreferida) ? props.ubicacionPreferida[0] : (props.ubicacionPreferida || '');
+      const modPref = Array.isArray(props.modalidadPreferida) ? props.modalidadPreferida[0] : (props.modalidadPreferida || '');
+      const salPref = Array.isArray(props.salarioPreferido) ? props.salarioPreferido[0] : (props.salarioPreferido || '');
+
+      setPreferencias(p => ({
+        ...p,
+        modalidad: modPref || p.modalidad,
+        salario: salPref || p.salario,
+        ubicacion: ubicPref || p.ubicacion,
+      }));
+
+      // academicos: carrera <- perteneceACarrera may be a URI or fragment
+      const carreraVal = (() => {
+        const c = props.perteneceACarrera;
+        if (!c) return academicos.carrera || '';
+        const first = Array.isArray(c) ? c[0] : c;
+        if (!first) return '';
+        // if it's a full uri, extract fragment
+        const frag = (first || '').split(/[#\/]/).pop();
+        return frag;
+      })();
+
+      setAcademicos(a => ({ ...a, carrera: carreraVal }));
+
+      // form: nombre, telefono, ubicacion, cedula
+      const nombreVal = Array.isArray(props.nombre) ? props.nombre[0] : (props.nombre || '');
+      const telefonoVal = Array.isArray(props.telefono) ? props.telefono[0] : (props.telefono || '');
+      const ubicVal = ubicPref || (Array.isArray(props.ubicacion) ? props.ubicacion[0] : (props.ubicacion || ''));
+
+      setForm(f => ({ ...f, nombre: nombreVal || f.nombre, telefono: telefonoVal || f.telefono, ubicacion: ubicVal || f.ubicacion }));
+    } catch (err) {
+      console.error('Error loading student profile in perfil:', err);
+    }
+  };
+
+  const [academicos, setAcademicos] = useState({
+    universidad: "",
+    carrera: "",
+    semestre: "",
+    promedio: "",
+
+    industria: "",
+    rol: "",
+    ubicacion_preferida: "",
   });
 
   const [preferencias, setPreferencias] = useState({
@@ -48,6 +103,45 @@ export default function MiPerfil() {
     salario: "",
     ubicacion: "",
   });
+
+  const [competenciasState, setCompetenciasState] = useState({ lista: [] });
+  const loadCompetencias = async () => {
+    if (!user || !user.cedula) return;
+    try {
+      // fetch student properties
+      const resp = await fetch(`http://localhost:3001/api/getEstudiante/${encodeURIComponent(user.cedula)}`);
+      if (!resp.ok) return;
+      const stu = await resp.json().catch(() => ({}));
+
+      // fetch competencies master list to map labels
+      const respC = await fetch('http://localhost:3001/api/getCompetencias');
+      const allComp = respC.ok ? await respC.json().catch(() => []) : [];
+      const compMap = {};
+      for (const r of (Array.isArray(allComp) ? allComp : [])) {
+        const uri = r.uri || '';
+        const frag = uri.split(/[#\/]/).pop();
+        const label = (r.propiedades && (r.propiedades.nombreCompetencia || r.propiedades.nombre) && (r.propiedades.nombreCompetencia || r.propiedades.nombre)[0]) || frag;
+        compMap[frag] = label;
+      }
+
+      const lista = [];
+      const posee = (stu.propiedades && stu.propiedades.poseeCompetencia) ? stu.propiedades.poseeCompetencia : [];
+      for (const p of posee) {
+        const frag = (p || '').split(/[#\\/]/).pop();
+        const label = compMap[frag] || (frag || '').replace(/_/g, ' ');
+        lista.push({ nombre: label, categoria: '', frag });
+      }
+
+      setCompetenciasState({ lista });
+    } catch (err) {
+      console.error('Error loading student competencias in perfil:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadCompetencias();
+    loadProfile();
+  }, [user]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -97,16 +191,20 @@ export default function MiPerfil() {
               </label>
             </div>
 
-            <h2 className="perfil-nombre">Ana García</h2>
-            <p className="perfil-sub">Ingeniería de Software</p>
-            <p className="perfil-sub">8° Semestre</p>
+            <h2 className="perfil-nombre">{form.nombre || 'Sin Nombre'}</h2>
+            <p className="perfil-sub">{form.cedula ? `Cédula: ${form.cedula}` : ''}</p>
+            <p className="perfil-sub">{academicos.carrera}</p>
 
             <div className="competencias-box">
               <h3>COMPETENCIAS DETECTADAS</h3>
               <div className="chips">
-                {["Python", "Project Management", "UI/UX Design", "React", "SQL"].map((c) => (
-                  <span key={c} className="chip">{c}</span>
-                ))}
+                {competenciasState.lista && competenciasState.lista.length > 0 ? (
+                  competenciasState.lista.map((c, i) => (
+                    <span key={i} className="chip">{c.nombre}</span>
+                  ))
+                ) : (
+                  <span className="chip muted">No hay competencias detectadas</span>
+                )}
               </div>
             </div>
           </div>
@@ -143,20 +241,7 @@ export default function MiPerfil() {
             )}
 
             {activeTab === "competencias" && (
-              <MisCompetencias
-                competencias={{
-                  total: 12,
-                  verificadas: 8,
-                  sugeridas: 3,
-                  lista: [
-                    { nombre: "Desarrollo en Python", categoria: "Programación", estado: "Verificada" },
-                    { nombre: "Trabajo en Equipo", categoria: "Habilidades Blandas", estado: "Verificada" },
-                    { nombre: "Gestión de Proyectos con Jira", categoria: "Herramientas", estado: "Pendiente" },
-                    { nombre: "Inglés Avanzado (C1)", categoria: "Idiomas", estado: "Verificada" },
-                    { nombre: "Análisis de Datos con Pandas", categoria: "Programación", estado: "Sugerida" }
-                  ]
-                }}
-              />
+              <MisCompetencias competencias={competenciasState} onUpdated={loadCompetencias} />
             )}
           </div>
         </div>

@@ -49,11 +49,11 @@ export async function updateUserPreference(data) {
 
 export async function updateUserPreferences(data) {
     // data = { userId, ubicacion?, modalidad?, salario? }
-    const { userId } = data;
-    if (!userId) throw new Error('userId requerido');
+    const { cedula } = data;
+    if (!cedula) throw new Error('cedula requerido');
 
     // Helper to build subject reference (allow full URI or fragment)
-    const subjectRef = userId.startsWith('http') ? `<${userId}>` : `practicas:${String(userId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
+    const subjectRef = cedula.startsWith('http') ? `<${cedula}>` : `practicas:${String(cedula).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
     // Persist each provided preference with a DELETE/INSERT pattern
     if (typeof data.ubicacion !== 'undefined') {
         const safe = String(data.ubicacion).replace(/"/g, '\\"');
