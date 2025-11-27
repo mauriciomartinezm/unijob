@@ -24,9 +24,9 @@ export default function InfoPersonal({ form, handleChange }) {
         </div>
 
         <div>
-          <label>Número de Teléfono</label>
+          <label>Cedula</label>
           <input
-            name="telefono"
+            name="cedula"
             value={form.telefono}
             onChange={handleChange}
           />

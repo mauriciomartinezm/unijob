@@ -113,18 +113,18 @@ export default function Inicio() {
             </p>
           </div>
         </div>
-      </div>
 
-      {/* CTA FINAL */}
-      <div className="cta-final">
-        <h2>¿Listo para encontrar la práctica de tus sueños?</h2>
-        <p>
-          Crea tu perfil en minutos y deja que la inteligencia artificial te
-          conecte con tu futuro profesional.
-        </p>
-        <NavLink to="/register" className="hero-btnr navlink-btnr">
-          Registrarse gratis
-        </NavLink>
+        {/* CTA FINAL */}
+        <div className="cta-final">
+          <h2>¿Listo para encontrar la práctica de tus sueños?</h2>
+          <p>
+            Crea tu perfil en minutos y deja que la inteligencia artificial te
+            conecte con tu futuro profesional.
+          </p>
+          <NavLink to="/register" className="hero-btnr navlink-btnr">
+            Registrarse gratis
+          </NavLink>
+        </div>
       </div>
     </>
   );

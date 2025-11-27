@@ -1,26 +1,43 @@
 .reco-container {
-  padding: 40px 60px;
-  background-color: #f8fafc;
+  padding: 60px;
+  background: var(--bg1);
+  color: var(--white);
+  min-height: 100vh;
+  animation: sectionFade 500ms ease both;
+}
+
+@keyframes sectionFade {
+  from { opacity: 0; transform: translateY(8px) }
+  to { opacity: 1; transform: none }
 }
 
 /* TÍTULOS */
 .reco-main-title {
   font-size: 32px;
   font-weight: 800;
-  color: #0d172a;
+  color: var(--white);
+  margin: 0;
+  text-align: center;
 }
 
 .reco-main-subtitle {
   margin-top: 6px;
   font-size: 16px;
-  color: #64748b;
+  color: var(--muted);
+  text-align: center;
 }
 
 /* GRID */
 .reco-grid {
-  margin-top: 40px;
+  margin: 40px auto 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 30px;
+  justify-items: center;
+  max-width: 1200px;
+}
+
+@media (max-width: 720px) {
+  .reco-container { padding: 32px }
 }
 

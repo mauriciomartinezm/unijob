@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../css/csscomponentes/nav.css";
 import { Bell } from "lucide-react";
-import logo from "../img/logo.png";
+import logo2 from "../img/logo2.png";
 
 export default function Navbar() {
   const [isLogged, setIsLogged] = useState(false);
@@ -10,7 +10,7 @@ export default function Navbar() {
   // Cargar estado desde localStorage al iniciar
   useEffect(() => {
     const saved = localStorage.getItem("isLogged");
-    setIsLogged(saved === "false");
+    setIsLogged(saved === "true");
   }, []);
 
   return (
@@ -18,7 +18,7 @@ export default function Navbar() {
 
       {/* IZQUIERDA: LOGO */}
       <div className="nav-left">
-        <img src={logo} alt="UniJob" className="logo" />
+        <img src={logo2} alt="UniJob" className="logo" />
       </div>
 
       {/* CENTRO: LINKS PRINCIPALES */}
@@ -33,7 +33,7 @@ export default function Navbar() {
         {!isLogged ? (
           <>
             <NavLink to="/login" className="nav-item">Iniciar sesión</NavLink>
-            <NavLink to="/registro" className="nav-item register-btn">Comenzar</NavLink>
+            <NavLink to="/register" className="nav-item register-btn">Comenzar</NavLink>
           </>
         ) : (
           <>

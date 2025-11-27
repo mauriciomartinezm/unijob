@@ -4,6 +4,7 @@ import Login from "./pages/Login.jsx";
 import MiPerfil from "./pages/perfil.jsx";
 import './App.css';
 import CardRecomendacion from "./pages/recomendaciones.jsx";
+import Register from "./pages/register.jsx";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Inicio />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/perfil" element={<MiPerfil />} />
       <Route path="/recomendaciones" element={<CardRecomendacion />} />
     </Routes>

@@ -19,7 +19,7 @@ export default function MiPerfil() {
   const [form, setForm] = useState({
     nombre: "Ana García",
     email: "ana.garcia@email.com",
-    telefono: "+52 55 1234 5678",
+    telefono: "1213313",
     ubicacion: "Ciudad de México, México",
     resumen: "",
   });
