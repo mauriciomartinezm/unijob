@@ -1,0 +1,149 @@
+/* CONTENEDOR */
+.competencias-container {
+  padding: 20px;
+}
+
+/* TITULOS */
+.title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: -5px;
+  color: #6b6b6b;
+  font-size: 15px;
+}
+
+/* TARJETAS SUPERIORES */
+.stats-grid {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.082);
+  text-align: center;
+}
+
+.stat-card h3 {
+  font-size: 26px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.stat-card span {
+  font-size: 14px;
+  color: #6f6f6f;
+}
+
+/* TABLA */
+.tabla-competencias {
+  margin-top: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.082);
+}
+
+/* HEADER DE TABLA */
+.tabla-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+
+.search-input {
+  width: 260px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #d8d8d8;
+  font-size: 14px;
+}
+
+/* BOTÓN AÑADIR */
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #407bff;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.btn-add:hover {
+  background: #2f66e2;
+}
+
+/* TABLA ESTILO */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px 0;
+  color: #6b6b6b;
+  font-size: 14px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+tbody td {
+  padding: 14px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+/* BADGES CATEGORÍA */
+.categoria-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+.programación {
+  background: #6a5af9;
+}
+
+.herramientas {
+  background: #1cb5e0;
+}
+
+.idiomas {
+  background: #ffb830;
+}
+
+.habilidades {
+  background: #ff6f91;
+}
+
+/* ACCIONES */
+.acciones {
+  display: flex;
+  gap: 12px;
+}
+
+.icon {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.icon.edit:hover {
+  color: #427bff;
+}
+
+.icon.delete:hover {
+  color: #e03434;
+}

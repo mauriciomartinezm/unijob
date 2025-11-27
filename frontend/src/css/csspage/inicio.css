@@ -1,0 +1,246 @@
+/* ============================= */
+/*   CONTENEDOR PRINCIPAL HERO   */
+/* ============================= */
+
+.hero-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px;
+  height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+/* TEXTOS DEL HERO */
+
+.hero-text {
+  max-width: 800px;
+}
+
+.hero-text h1 {
+  font-size: 70px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0d172a;
+}
+
+.hero-text p {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+/* ============================= */
+/*            BOTONES            */
+/* ============================= */
+
+/* Botón azul */
+.hero-btn {
+  margin-top: 30px;
+  background-color: #3b82f6;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.hero-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Botón blanco (Registrarse gratis) */
+.hero-btnr {
+  margin-top: 30px;
+  background-color: white;
+  color: #3b82f6;
+  padding: 14px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.hero-btnr:hover {
+  background-color: #4abbfc;
+  color: white;
+}
+
+/* NavLinks que actúan como botones */
+.navlink-btn,
+.navlink-btnr {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* NavLink azul (hereda el blanco del botón) */
+.navlink-btn {
+  color: white;
+}
+
+/* NavLink blanco (hereda color del botón) */
+.navlink-btnr {
+  color: #3b82f6;
+}
+
+
+/* ============================= */
+/*              IMAGEN           */
+/* ============================= */
+
+.hero-img-container {
+  width: 700px;
+}
+
+.hero-img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+/* ============================= */
+/*            BENEFICIOS         */
+/* ============================= */
+
+.beneficios-container {
+  text-align: center;
+  padding: 80px 60px;
+  background-color: #ffffff;
+}
+
+.beneficios-subtitle {
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.beneficios-title {
+  margin-top: 10px;
+  font-size: 36px;
+  font-weight: 800;
+  color: #0d172a;
+}
+
+.beneficios-description {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #4a5568;
+}
+
+.beneficios-cards {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.beneficio-card {
+  width: 300px;
+  padding: 30px;
+  border-radius: 14px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.beneficio-card h3 {
+  margin-top: 15px;
+  font-size: 20px;
+  color: #0d172a;
+  font-weight: 700;
+}
+
+.beneficio-card p {
+  margin-top: 10px;
+  color: #4a5568;
+  font-size: 16px;
+}
+
+.beneficio-icon img {
+  width: 36px;
+  height: auto;
+}
+
+/* ============================= */
+/*        ¿CÓMO FUNCIONA?        */
+/* ============================= */
+
+.funciona-container {
+  text-align: center;
+  padding: 100px 60px;
+  background-color: #ffffff;
+}
+
+.funciona-title {
+  font-size: 34px;
+  color: #0d172a;
+  font-weight: 800;
+}
+
+.funciona-steps {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+.step-card {
+  width: 280px;
+  text-align: center;
+}
+
+.step-number {
+  font-size: 40px;
+  color: #3b82f6;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.step-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0d172a;
+}
+
+.step-card p {
+  margin-top: 10px;
+  color: #4a5568;
+  font-size: 16px;
+}
+
+/* ============================= */
+/*      CTA FINAL / REGISTRO     */
+/* ============================= */
+
+.cta-final {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  background-color: #3b82f6;
+  padding: 60px 40px;
+  border-radius: 16px;
+  text-align: center;
+  width: 90%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+}
+
+.cta-final h2 {
+  color: white;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.cta-final p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.9;
+}

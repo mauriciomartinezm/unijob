@@ -1,0 +1,81 @@
+/* Contenedor general del tab */
+.tab-content {
+  padding: 20px;
+}
+
+/* Título de sección */
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Limitar ancho de inputs */
+.input-small {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-small:focus {
+  border-color: #6b4bff;
+}
+
+/* Secciones */
+.form-section {
+  margin-bottom: 25px;
+}
+
+/* Checkboxes modalidad */
+.modalidad {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+/* Botón */
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-actualizar {
+  padding: 10px 18px;
+  background-color: #6b4bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-actualizar:hover {
+  background-color: #593dd6;
+}
+
+.select-input {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 15px;
+  max-width: 400px;
+  cursor: pointer;
+}
+
+.select-input:focus {
+  border-color: #6b4bff;
+}

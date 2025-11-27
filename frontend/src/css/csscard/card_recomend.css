@@ -1,0 +1,105 @@
+.reco-card {
+  width: 260px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.06);
+  transition: 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.reco-card:hover {
+  transform: translateY(-2px);
+}
+
+/* HEADER */
+.reco-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reco-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.reco-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0d172a;
+  margin: 0;
+}
+
+.reco-empresa {
+  margin: 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* UBICACIÓN */
+.reco-ubicacion {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.reco-icon {
+  font-size: 18px;
+  color: #3b82f6;
+}
+
+/* SUBTÍTULO */
+.reco-subtitle {
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+/* TAGS */
+.reco-tags {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reco-tag {
+  background-color: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+/* DIVIDER */
+.reco-divider {
+  margin: 18px 0;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* BOTÓN */
+.reco-btn {
+  width: 100%;
+  padding: 10px 0;
+  background-color: #e8f2ff;
+  color: #2563eb;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reco-btn:hover {
+  background-color: #d7e8ff;
+}

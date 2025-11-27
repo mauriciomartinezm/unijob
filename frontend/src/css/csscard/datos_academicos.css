@@ -1,0 +1,80 @@
+/* CONTENEDOR GENERAL DEL TAB */
+.tab-content {
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+/* TITULO PRINCIPAL */
+.tab-content h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 25px;
+}
+
+/* SUBTÍTULOS DE SECCIÓN */
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+
+/* GRID 2 COLUMNAS */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  margin-bottom: 25px;
+}
+
+/* LABELS */
+.form-grid label,
+.empresa-tipos > label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* INPUTS */
+.form-grid input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-grid input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* BOTÓN */
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+
+.btn-actualizar {
+  background-color: #2563eb;
+  padding: 10px 22px;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-actualizar:hover {
+  background-color: #1e4fc7;
+}
