@@ -1,8 +1,10 @@
 import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 
-export async function generarRecomendaciones(userId) {
-    console.log(`Generando recomendaciones para usuario: ${userId}`);
-    // Use the practicas ontology used in the repository
+export async function generarRecomendaciones(userId, options = { includeZeroMatches: false, limit: 20 }) {
+    const { includeZeroMatches, limit } = options;
+    console.log(`Generando recomendaciones para usuario: ${userId} (includeZeroMatches=${includeZeroMatches})`);
+    // Build SPARQL query; optionally exclude offers with zero matches using HAVING
+    const havingClause = includeZeroMatches ? '' : 'HAVING (COUNT(DISTINCT ?matchCompetencia) > 0)';
     const query = `
     PREFIX practicas: <http://www.unijob.edu/practicas#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -37,8 +39,9 @@ export async function generarRecomendaciones(userId) {
             }
         }
         GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName
+        ${havingClause}
         ORDER BY DESC(?matches)
-        LIMIT 20
+        LIMIT ${Number(limit || 20)}
     `;
 
     const result = await sparqlQuery(query);
