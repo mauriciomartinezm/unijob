@@ -59,7 +59,9 @@ export default function Recomendaciones() {
               logo={logoDefault}
               titulo={r.titulo || r.descripcion || 'Sin título'}
               empresa={r.nombreEmpresa || ''}
-              ubicacion={r.modalidad || ''}
+              ubicacion={r.ubicacionOferta || ''}
+              isLocal={user && user.ubicacion && r.ubicacionOferta && user.ubicacion === r.ubicacionOferta}
+              modalidad={r.modalidad || ''}
               competencias={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
             />
           ))}

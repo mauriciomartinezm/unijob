@@ -51,6 +51,16 @@ export const solicitarRecomendacion = async (req, res) => {
   try {
     const id = req.params.id;
     const userId = id;
+    // Try to fetch user's ubicacionPreferida to prioritize local offers
+    let preferredLocation = null;
+    try {
+      const qLoc = `${PREFIXES}\nSELECT ?s ?loc WHERE { ?s practicas:cedula "${userId}" . OPTIONAL { ?s practicas:ubicacionPreferida ?loc } } LIMIT 1`;
+      const rloc = await sparqlQuery(qLoc);
+      const b = rloc && rloc.results && rloc.results.bindings ? rloc.results.bindings : [];
+      if (b.length > 0 && b[0].loc && b[0].loc.value) preferredLocation = b[0].loc.value;
+    } catch (errLoc) {
+      console.error('Error fetching user preferred location:', errLoc);
+    }
 
     const rows = await new Promise((resolve, reject) => {
       let called = false;
@@ -61,7 +71,7 @@ export const solicitarRecomendacion = async (req, res) => {
         }
       }, 10000);
 
-      recommendAgent.emit('solicitar_recomendacion', { userId, callback: (result) => {
+      recommendAgent.emit('solicitar_recomendacion', { userId, options: { preferredLocation }, callback: (result) => {
         if (called) return;
         called = true;
         clearTimeout(timer);

@@ -8,14 +8,14 @@ class RecommendAgent extends EventEmitter {
         console.log("🤖 RecommendAgent iniciado");
 
         // Escuchar evento de petición de recomendación
-        this.on("solicitar_recomendacion", async ({ userId, callback }) => {
+        this.on("solicitar_recomendacion", async ({ userId, options, callback }) => {
             try {
                 console.log("🔍 Generando recomendaciones para:", userId);
 
-                const recomendaciones = await generarRecomendaciones(userId);
+                const recomendaciones = await generarRecomendaciones(userId, options || {});
 
                 // Devolver los resultados a quien llamó el evento
-                callback(recomendaciones);
+                if (typeof callback === 'function') callback(recomendaciones);
 
             } catch (err) {
                 console.error("❌ Error en RecommendAgent:", err);
