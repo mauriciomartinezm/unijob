@@ -74,7 +74,12 @@ export default function MiPerfil() {
         return frag;
       })();
 
-      setAcademicos(a => ({ ...a, carrera: carreraVal }));
+      // other academic fields: universidad, semestre, promedio
+      const uniVal = Array.isArray(props.universidad) ? props.universidad[0] : (props.universidad || '');
+      const semVal = Array.isArray(props.semestre) ? props.semestre[0] : (props.semestre || '');
+      const promVal = Array.isArray(props.promedio) ? props.promedio[0] : (props.promedio || '');
+
+      setAcademicos(a => ({ ...a, carrera: carreraVal, universidad: uniVal || a.universidad, semestre: semVal || a.semestre, promedio: promVal || a.promedio }));
 
       // form: nombre, telefono, ubicacion, cedula
       const nombreVal = Array.isArray(props.nombre) ? props.nombre[0] : (props.nombre || '');
