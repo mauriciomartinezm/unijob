@@ -1,0 +1,173 @@
+/* Container */
+.vermas-card {
+	width: 100%;
+	max-width: 720px;
+	background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+	padding: 24px;
+	border-radius: 16px;
+	box-shadow: 0 10px 26px rgba(2,6,23,0.55);
+	border: 1px solid rgba(255,255,255,0.08);
+	transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+	color: var(--white);
+}
+
+.vermas-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 14px 34px rgba(2,6,23,0.65);
+	border-color: rgba(255,255,255,0.12);
+}
+
+/* Header */
+.vermas-header {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.vermas-logo {
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	object-fit: contain;
+}
+
+.vermas-titleblock { flex: 1; }
+.vermas-title {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--white);
+}
+.vermas-empresa {
+	margin: 0;
+	font-size: 14px;
+	color: var(--muted);
+}
+
+.vermas-actions {
+	display: flex;
+	gap: 8px;
+}
+.vermas-icon-btn {
+	width: 34px;
+	height: 34px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	border: 1px solid rgba(255,255,255,0.12);
+	background: rgba(255,255,255,0.06);
+	color: var(--white);
+	cursor: pointer;
+	transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+.vermas-icon-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(2,6,23,0.4);
+	background: rgba(255,255,255,0.12);
+}
+.vermas-icon-btn.like { border-color: rgba(79,70,229,0.28); }
+.vermas-icon-btn.dislike { border-color: rgba(239,68,68,0.28); }
+
+/* Info */
+.vermas-info { margin-top: 14px; }
+.vermas-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--muted);
+}
+.vermas-icon { font-size: 18px; color: var(--accent); }
+.vermas-text { font-size: 14px; }
+
+/* Description */
+.vermas-desc {
+	margin-top: 12px;
+	color: var(--white);
+	line-height: 1.5;
+}
+.vermas-desc p { margin: 0; }
+
+/* Tags */
+.vermas-subtitle {
+	margin-top: 18px;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--muted);
+}
+.vermas-tags {
+	margin-top: 10px;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.vermas-tag {
+	background-color: rgba(255,255,255,0.08);
+	padding: 6px 12px;
+	border-radius: 8px;
+	font-size: 12px;
+	color: var(--white);
+	font-weight: 500;
+	border: 1px solid rgba(255,255,255,0.08);
+	transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+.vermas-tag:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(2,6,23,0.4);
+	background-color: rgba(255,255,255,0.12);
+}
+
+/* Divider */
+.vermas-divider {
+	margin: 18px 0;
+	border: none;
+	border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Button */
+.vermas-btn {
+	width: 100%;
+	padding: 12px 0;
+	background: linear-gradient(90deg, var(--accent), var(--accent2));
+	color: var(--white);
+	border: none;
+	border-radius: 10px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+	box-shadow: 0 6px 18px rgba(124,58,237,0.22);
+}
+.vermas-btn:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 14px 30px rgba(79, 70, 229, 0.28);
+}
+.vermas-btn:focus-visible {
+	outline: none;
+	filter: drop-shadow(0 0 0.35rem rgba(124,58,237,0.45));
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+	.vermas-card { padding: 18px; }
+	.vermas-title { font-size: 16px; }
+	.vermas-logo { width: 34px; height: 34px; }
+	.vermas-icon-btn { width: 30px; height: 30px; }
+}
+
+/* Overlay for modal presentation */
+.vermas-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(2,6,23,0.65);
+	backdrop-filter: blur(2px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 16px;
+}
+
+.vermas-modal {
+	max-width: 820px;
+	width: 100%;
+}

@@ -60,6 +60,9 @@ export default function Recomendaciones() {
               titulo={r.titulo || r.descripcion || 'Sin título'}
               empresa={r.nombreEmpresa || ''}
               ubicacion={r.modalidad || ''}
+              descripcion={r.descripcion || ''}
+              modalidad={r.modalidad || ''}
+              requiereCompetencia={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
               competencias={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
             />
           ))}

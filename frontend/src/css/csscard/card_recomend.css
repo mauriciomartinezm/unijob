@@ -10,6 +10,7 @@
   flex-direction: column;
   color: var(--white);
   animation: cardPop 450ms cubic-bezier(.2,.9,.3,1);
+  min-height: 340px;
 }
 
 .reco-card:hover {
@@ -109,6 +110,7 @@
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
   box-shadow: 0 6px 18px rgba(124,58,237,0.22);
+  margin-top: auto;
 }
 
 .reco-btn:hover {

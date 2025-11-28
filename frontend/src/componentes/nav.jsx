@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "../css/csscomponentes/nav.css";
-import { Bell, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import logo2 from "../img/logo2.png";
 import { useUser } from "../context/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
@@ -25,42 +25,51 @@ export default function Navbar() {
       if (!menuRef.current) return;
       if (!menuRef.current.contains(e.target)) setShowMenu(false);
     };
-    document.addEventListener('click', onDocClick);
-    return () => document.removeEventListener('click', onDocClick);
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
   }, []);
 
   const handleLogout = () => {
     try {
       if (logout) logout();
     } catch (err) {
-      console.error('Logout error', err);
+      console.error("Logout error", err);
     }
     setIsLogged(false);
     setShowMenu(false);
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <nav className={`navbar ${mobileOpen ? 'mobile-open' : ''}`}>
-
+    <nav className={`navbar ${mobileOpen ? "mobile-open" : ""}`}>
       {/* IZQUIERDA: LOGO */}
       <div className="nav-left">
-        <img src={logo2} alt="UniJob" className="logo" />
+        <NavLink to="/" className="">
+          <img src={logo2} alt="UniJob" className="logo" />
+        </NavLink>
       </div>
 
-      {/* CENTRO: LINKS PRINCIPALES */}
-      <div className="nav-center">
-        <NavLink to="/" className="nav-item">Inicio</NavLink>
-        <NavLink to="/perfil" className="nav-item">Mi perfil</NavLink>
-        <NavLink to="/recomendaciones" className="nav-item">Recomendaciones</NavLink>
-      </div>
+      {/* CENTRO: LINKS PRINCIPALES (solo loggeado) */}
+      {isLogged && (
+        <div className="nav-center">
+          <NavLink to="/" className="nav-item">
+            Inicio
+          </NavLink>
+          <NavLink to="/perfil" className="nav-item">
+            Mi perfil
+          </NavLink>
+          <NavLink to="/recomendaciones" className="nav-item">
+            Recomendaciones
+          </NavLink>
+        </div>
+      )}
 
       {/* TOGGLE MOBILE */}
       <button
         className="nav-toggle"
         aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={mobileOpen}
-        onClick={() => setMobileOpen(o => !o)}
+        onClick={() => setMobileOpen((o) => !o)}
       >
         {mobileOpen ? <X size={26} /> : <Menu size={26} />}
       </button>
@@ -69,13 +78,16 @@ export default function Navbar() {
       <div className="nav-right">
         {!isLogged ? (
           <>
-            <NavLink to="/login" className="nav-item">Iniciar sesión</NavLink>
-            <NavLink to="/register" className="nav-item register-btn">Comenzar</NavLink>
+            <NavLink to="/login" className="nav-item">
+              Iniciar sesión
+            </NavLink>
+            <NavLink to="/register" className="nav-item register-btn">
+              Comenzar
+            </NavLink>
           </>
         ) : (
           <>
-            <Bell className="icon" />
-            <div style={{ position: 'relative' }} ref={menuRef}>
+            <div style={{ position: "relative" }} ref={menuRef}>
               <div
                 className="user-circle user-circle-blue"
                 onClick={(e) => {
@@ -85,7 +97,9 @@ export default function Navbar() {
               ></div>
               {showMenu && (
                 <div className="user-menu">
-                  <button className="user-menu-item" onClick={handleLogout}>Cerrar sesión</button>
+                  <button className="user-menu-item" onClick={handleLogout}>
+                    Cerrar sesión
+                  </button>
                 </div>
               )}
             </div>
@@ -94,22 +108,61 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE SLIDE MENU */}
-      <div className={`mobile-menu ${mobileOpen ? 'open' : ''}`}> 
+      <div className={`mobile-menu ${mobileOpen ? "open" : ""}`}>
         <div className="mobile-links">
-          <NavLink onClick={() => setMobileOpen(false)} to="/" className="nav-item">Inicio</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} to="/perfil" className="nav-item">Mi perfil</NavLink>
-          <NavLink onClick={() => setMobileOpen(false)} to="/recomendaciones" className="nav-item">Recomendaciones</NavLink>
-          {!isLogged ? (
+          {isLogged ? (
             <>
-              <NavLink onClick={() => setMobileOpen(false)} to="/login" className="nav-item">Iniciar sesión</NavLink>
-              <NavLink onClick={() => setMobileOpen(false)} to="/register" className="nav-item register-btn">Comenzar</NavLink>
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                to="/"
+                className="nav-item"
+              >
+                Inicio
+              </NavLink>
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                to="/perfil"
+                className="nav-item"
+              >
+                Mi perfil
+              </NavLink>
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                to="/recomendaciones"
+                className="nav-item"
+              >
+                Recomendaciones
+              </NavLink>
+              <button
+                className="nav-item logout-btn"
+                onClick={() => {
+                  handleLogout();
+                  setMobileOpen(false);
+                }}
+              >
+                Cerrar sesión
+              </button>
             </>
           ) : (
-            <button className="nav-item logout-btn" onClick={() => { handleLogout(); setMobileOpen(false); }}>Cerrar sesión</button>
+            <>
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                to="/login"
+                className="nav-item"
+              >
+                Iniciar sesión
+              </NavLink>
+              <NavLink
+                onClick={() => setMobileOpen(false)}
+                to="/register"
+                className="nav-item register-btn"
+              >
+                Comenzar
+              </NavLink>
+            </>
           )}
         </div>
       </div>
-
     </nav>
   );
 }
