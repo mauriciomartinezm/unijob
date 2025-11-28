@@ -7,6 +7,7 @@ export default function CardRecomendacion({
   titulo,
   empresa,
   ubicacion,
+  isLocal = false,
   competencias = [],
   descripcion,
   modalidad,
@@ -39,7 +40,12 @@ export default function CardRecomendacion({
           <p>📍</p>
           <p>{ubicacion}</p>
         </div>
-
+        {/* MODALIDAD */}
+        {modalidad && (
+          <div className="reco-modalidad" style={{ marginTop: 8 }}>
+            <strong>Modalidad:</strong> <span>{modalidad}</span>
+          </div>
+        )}
         {/* COMPETENCIAS */}
         <p className="reco-subtitle">COMPETENCIAS REQUERIDAS</p>
         <div className="reco-tags">
