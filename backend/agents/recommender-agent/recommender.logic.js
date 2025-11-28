@@ -3,6 +3,16 @@ import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 export async function generarRecomendaciones(userId, options = { includeZeroMatches: false, limit: 20, preferredLocation: null }) {
     const { includeZeroMatches, limit, preferredLocation } = options || {};
     console.log(`Generando recomendaciones para usuario: ${userId} (includeZeroMatches=${includeZeroMatches}, preferredLocation=${preferredLocation})`);
+    // Try to read user's salarioPreferido first so we can enforce minimum salary
+    let salarioPrefValue = null;
+    try {
+        const qSalPref = `PREFIX practicas: <http://www.unijob.edu/practicas#> SELECT ?s WHERE { practicas:${userId} practicas:salarioPreferido ?s } LIMIT 1`;
+        const rpf = await sparqlQuery(qSalPref);
+        const bpf = rpf && rpf.results && rpf.results.bindings ? rpf.results.bindings : [];
+        if (bpf.length > 0 && bpf[0].s && bpf[0].s.value) salarioPrefValue = bpf[0].s.value;
+    } catch (e) {
+        console.warn('No se pudo obtener salarioPreferido para usuario', userId, e);
+    }
     // Build SPARQL query; optionally exclude offers with zero matches using HAVING
     const havingClause = includeZeroMatches ? '' : 'HAVING (COUNT(DISTINCT ?matchCompetencia) > 0)';
 
@@ -11,11 +21,14 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     const locationExpr = escapedLoc ? `(IF(STR(?ubicacionOferta) = "${escapedLoc}", 1, 0) AS ?localMatch)` : '';
     const orderPrefix = escapedLoc ? 'DESC(?localMatch) ' : '';
 
+    const salaryFilterClause = salarioPrefValue ? `FILTER( BOUND(?salario) && xsd:decimal(?salario) >= xsd:decimal("${String(salarioPrefValue).replace(/"/g, '\"')}") )` : '';
+
     const query = `
     PREFIX practicas: <http://www.unijob.edu/practicas#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-        SELECT ?op (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ${locationExpr} WHERE {
+    SELECT ?op (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario ${locationExpr} WHERE {
             # candidate opportunities
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
@@ -23,6 +36,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
             OPTIONAL { ?op practicas:titulo ?titulo }
             OPTIONAL { ?op practicas:modalidad ?modalidad }
             OPTIONAL { ?op practicas:ubicacionOferta ?ubicacionOferta }
+            OPTIONAL { ?op practicas:salario ?salario }
 
             # collect ALL required competencies for the opportunity
             OPTIONAL { ?op practicas:requiereCompetencia ?allReq . }
@@ -44,15 +58,24 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
                 practicas:${userId} practicas:tienePreferencia ?reqCompetencia .
                 practicas:${userId} practicas:valorPreferencia "dislike" .
             }
+
+            # Exclude opportunities located in user's rejected locations unless modality is virtual
+            FILTER NOT EXISTS {
+                practicas:${userId} practicas:ubicacionRechazada ?badLoc .
+                # compare offer location with rejected location and allow if modality is virtual
+                FILTER( STR(?ubicacionOferta) = STR(?badLoc) && !(lcase(str(?modalidad)) = "virtual") )
+            }
+
+            ${salaryFilterClause}
         }
-        GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta
+    GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
         ${havingClause}
         ORDER BY ${orderPrefix}DESC(?matches)
         LIMIT ${Number(limit || 20)}
     `;
 
     const result = await sparqlQuery(query);
-
+    console.log(`Recomendaciones generadas para usuario ${userId}:`, result);
     // result may be SPARQL JSON; normalize to friendly objects
     const rows = (result.results && result.results.bindings) ? result.results.bindings : [];
     return rows.map(r => {
@@ -73,8 +96,8 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
             titulo: r.titulo ? r.titulo.value : null,
             descripcion: r.descripcion ? r.descripcion.value : null,
             modalidad: r.modalidad ? r.modalidad.value : null,
-            modalidad: r.modalidad ? r.modalidad.value : null,
             ubicacionOferta: r.ubicacionOferta ? r.ubicacionOferta.value : null,
+            salario: r.salario ? r.salario.value : null,
             nombreEmpresa: r.empresaName ? r.empresaName.value : null
         };
     });
@@ -89,6 +112,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
  *  - practicas:generatedAt "ISO"^^xsd:dateTime
  */
 export async function generarYpersistirRecomendaciones(userId) {
+    console.log(`Generando y persistiendo recomendaciones para usuario: ${userId}`);
     const rows = await generarRecomendaciones(userId);
 
     // Normalize subject URI for user

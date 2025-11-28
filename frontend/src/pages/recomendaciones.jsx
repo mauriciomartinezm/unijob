@@ -63,6 +63,8 @@ export default function Recomendaciones() {
               isLocal={user && user.ubicacion && r.ubicacionOferta && user.ubicacion === r.ubicacionOferta}
               modalidad={r.modalidad || ''}
               descripcion={r.descripcion || ''}
+              salario={r.salario || ''}
+              ofertaId={r.opportunity || r.op || null}
               requiereCompetencia={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
               competencias={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
             />

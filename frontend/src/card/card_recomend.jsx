@@ -11,10 +11,12 @@ export default function CardRecomendacion({
   competencias = [],
   descripcion,
   modalidad,
+  salario,
   requiereCompetencia = [],
   onClick,
   onLike,
   onDislike,
+  ofertaId = null,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -46,6 +48,12 @@ export default function CardRecomendacion({
             <strong>Modalidad:</strong> <span>{modalidad}</span>
           </div>
         )}
+        {/* SALARIO */}
+        {typeof salario !== 'undefined' && salario !== '' && (
+          <div className="reco-salario" style={{ marginTop: 8 }}>
+            <strong>Salario:</strong> <span>{salario}</span>
+          </div>
+        )}
         {/* COMPETENCIAS */}
         <p className="reco-subtitle">COMPETENCIAS REQUERIDAS</p>
         <div className="reco-tags">
@@ -65,12 +73,15 @@ export default function CardRecomendacion({
       </div>
       {open && (
         <div className="vermas-overlay" onClick={handleClose}>
-          <div className="vermas-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="vermas-modal" data-oferta-id={ofertaId || ''} onClick={(e) => e.stopPropagation()}>
             <CardVerMas
               titulo={titulo}
               descripcion={descripcion}
-              modalidad={modalidad || ubicacion}
+              ubicacion={ubicacion}
+              modalidad={modalidad}
               nombreEmpresa={empresa}
+              ofertaId={ofertaId}
+              salario={salario}
               requiereCompetencia={
                 competencias.length ? competencias : requiereCompetencia
               }

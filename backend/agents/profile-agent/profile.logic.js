@@ -1,4 +1,4 @@
-import { sparqlUpdate } from "../../shared/fuseki-client.js";
+import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 
 /*
 data = {
@@ -39,6 +39,56 @@ export async function updateUserPreference(data) {
     if (data.ofertaId) {
         const safeOferta = String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
         triples.push(`${subjectRef} practicas:reaccionSobre practicas:${safeOferta} .`);
+    }
+
+    // If the interaction references an oferta and the motivo indicates a location issue,
+    // persist the oferta's ubicacion as a rejected location for the user so recommender can exclude it.
+    if (data.ofertaId && data.motivo && /ubic/i.test(String(data.motivo))) {
+        try {
+            const ofertaRef = data.ofertaId.startsWith('http') ? `<${data.ofertaId}>` : `practicas:${String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
+            const q = `PREFIX practicas: <http://www.unijob.edu/practicas#> SELECT ?u WHERE { ${ofertaRef} practicas:ubicacionOferta ?u } LIMIT 1`;
+            const r = await sparqlQuery(q);
+            const b = r && r.results && r.results.bindings ? r.results.bindings : [];
+            if (b.length > 0 && b[0].u && b[0].u.value) {
+                const safeUb = String(b[0].u.value).replace(/"/g, '\\"');
+                triples.push(`${subjectRef} practicas:ubicacionRechazada "${safeUb}" .`);
+            }
+        } catch (e) {
+            console.error('Error obteniendo ubicacion de oferta para registrar ubicacionRechazada:', e);
+        }
+    }
+
+    // If the interaction explicitly included a ubicacion field and it's a dislike, persist it
+    if (data.ubicacion && typeof data.gusto !== 'undefined' && data.gusto === false) {
+        const safeUb2 = String(data.ubicacion).replace(/"/g, '\\"');
+        triples.push(`${subjectRef} practicas:ubicacionRechazada "${safeUb2}" .`);
+    }
+
+    // If the user provided a salary in the interaction (or the motivo mentions salary and ofertaId present),
+    // persist it as the user's salarioPreferido (minimum acceptable salary).
+    try {
+        if (typeof data.salario !== 'undefined' && data.salario !== null && data.salario !== '') {
+            const safeSal = String(data.salario).replace(/"/g, '\\"');
+            const qSal = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nINSERT { ${subjectRef} practicas:salarioPreferido "${safeSal}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
+            await sparqlUpdate(qSal);
+        } else if (data.ofertaId && data.motivo && /salari/i.test(String(data.motivo))) {
+            // try to query the oferta for its salario and persist that as salarioPreferido
+            try {
+                const ofertaRef = data.ofertaId.startsWith('http') ? `<${data.ofertaId}>` : `practicas:${String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
+                const q = `PREFIX practicas: <http://www.unijob.edu/practicas#> SELECT ?s WHERE { ${ofertaRef} practicas:salario ?s } LIMIT 1`;
+                const r = await sparqlQuery(q);
+                const b = r && r.results && r.results.bindings ? r.results.bindings : [];
+                if (b.length > 0 && b[0].s && b[0].s.value) {
+                    const safeSal2 = String(b[0].s.value).replace(/"/g, '\\"');
+                    const qSal2 = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nINSERT { ${subjectRef} practicas:salarioPreferido "${safeSal2}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
+                    await sparqlUpdate(qSal2);
+                }
+            } catch (e) {
+                console.error('Error obteniendo salario de oferta para registrar salarioPreferido:', e);
+            }
+        }
+    } catch (e) {
+        console.error('Error al persistir salarioPreferido desde interaccion:', e);
     }
 
     if (triples.length === 0) return; // nothing to persist

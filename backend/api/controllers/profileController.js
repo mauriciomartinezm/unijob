@@ -4,6 +4,7 @@ import crypto from 'crypto';
 
 
 export const createInteraction = async (req, res) => {
+    console.log("createInteraction called");
     try {
         const data = req.body;
 

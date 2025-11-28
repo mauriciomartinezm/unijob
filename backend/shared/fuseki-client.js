@@ -5,7 +5,7 @@ const UPDATE_URL = process.env.FUSEKI_UPDATE_URL || 'http://localhost:3030/datas
 
 // --- CONSULTAS (SELECT / CONSTRUCT / ASK) ---
 export async function sparqlQuery(query) {
-    console.log("Ejecutando SPARQL QUERY:", query);
+    console.log("Ejecutando SPARQL QUERY:");
 
     const res = await fetch(QUERY_URL, {
         method: "POST",
@@ -15,7 +15,7 @@ export async function sparqlQuery(query) {
         },
         body: query
     });
-
+    console.log("Respuesta recibida de Fuseki ", res );
     if (!res.ok) {
         throw new Error(`Error en SPARQL QUERY: ${res.status} ${res.statusText}`);
     }
