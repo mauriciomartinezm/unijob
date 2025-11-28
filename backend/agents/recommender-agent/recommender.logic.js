@@ -13,6 +13,137 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     } catch (e) {
         console.warn('No se pudo obtener salarioPreferido para usuario', userId, e);
     }
+
+    // Build salary filter clause early so it can be used by the "preferences-only" path.
+    // Note: xsd prefix is added inside queries that use this clause.
+    const salaryFilterClause = salarioPrefValue ? `FILTER( BOUND(?salario) && xsd:decimal(?salario) >= xsd:decimal("${String(salarioPrefValue).replace(/"/g, '\\"')}") )` : '';
+
+    // Determine if the user has ANY competencias or explicit preferences recorded.
+    // If the user has neither, consider them a first-time user and return all offers.
+    let cCount = 0;
+    let pCount = 0;
+    try {
+        const qCheck = `PREFIX practicas: <http://www.unijob.edu/practicas#>
+            SELECT (COUNT(DISTINCT ?c) AS ?cCount) (COUNT(DISTINCT ?p) AS ?pCount) WHERE {
+                OPTIONAL { practicas:${userId} practicas:poseeCompetencia ?c }
+                OPTIONAL {
+                    { practicas:${userId} practicas:ubicacionPreferida ?p }
+                    UNION { practicas:${userId} practicas:modalidadPreferida ?p }
+                    UNION { practicas:${userId} practicas:salarioPreferido ?p }
+                }
+            } LIMIT 1`;
+        const chk = await sparqlQuery(qCheck);
+        const bindings = chk && chk.results && chk.results.bindings ? chk.results.bindings : [];
+        if (bindings.length > 0) {
+            const b = bindings[0];
+            cCount = b.cCount ? Number(b.cCount.value) : 0;
+            pCount = b.pCount ? Number(b.pCount.value) : 0;
+        }
+    } catch (e) {
+        console.warn('No se pudo verificar si el usuario tiene competencias/preferencias', userId, e);
+        // leave cCount/pCount as 0 (conservative); but avoid returning everything on error by
+        // treating as if user has prefs to fall into the guarded path below.
+        cCount = 0;
+        pCount = 1; // force preference path on error
+    }
+
+    // If the user has no competencias and no preferences, return ALL offers (no filtering by user data).
+    if ((cCount + pCount) === 0) {
+        const allQuery = `
+        PREFIX practicas: <http://www.unijob.edu/practicas#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT ?op (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
+            ?op rdf:type practicas:OfertaPractica .
+            OPTIONAL { ?op practicas:descripcion ?descripcion }
+            OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
+            OPTIONAL { ?op practicas:titulo ?titulo }
+            OPTIONAL { ?op practicas:modalidad ?modalidad }
+            OPTIONAL { ?op practicas:ubicacionOferta ?ubicacionOferta }
+            OPTIONAL { ?op practicas:salario ?salario }
+            OPTIONAL { ?op practicas:requiereCompetencia ?allReq }
+        }
+        GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
+        ORDER BY DESC(?op)
+        LIMIT ${Number(limit || 20)}
+        `;
+
+        const resAll = await sparqlQuery(allQuery);
+        const rowsAll = (resAll && resAll.results && resAll.results.bindings) ? resAll.results.bindings : [];
+        return rowsAll.map(r => {
+            const rawReq = r.reqCompetencias ? r.reqCompetencias.value : null;
+            const reqArray = rawReq ? rawReq.split('|').map(s => s.trim()).filter(Boolean) : [];
+            const reqFrags = reqArray.map(u => {
+                try { const parts = (u || '').split(/[#\/]/); return parts.length ? parts.pop() : u; } catch (e) { return u; }
+            });
+            return {
+                opportunity: r.op ? r.op.value : null,
+                matches: 0,
+                requiereCompetencia: reqFrags,
+                titulo: r.titulo ? r.titulo.value : null,
+                descripcion: r.descripcion ? r.descripcion.value : null,
+                modalidad: r.modalidad ? r.modalidad.value : null,
+                ubicacionOferta: r.ubicacionOferta ? r.ubicacionOferta.value : null,
+                salario: r.salario ? r.salario.value : null,
+                nombreEmpresa: r.empresaName ? r.empresaName.value : null
+            };
+        });
+    }
+
+    // If the user has preferences but NO competencias, return offers filtered by preferences
+    // (e.g., salarioPreferido, ubicacionRechazada, modalidadPreferida) but do NOT require
+    // a competencia match. This avoids returning zero results for users who only set prefs.
+    if (cCount === 0 && pCount > 0) {
+        // Build a query similar to the main one but without requiring the user to have a competencia
+        const prefQuery = `
+        PREFIX practicas: <http://www.unijob.edu/practicas#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        SELECT ?op (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
+            ?op rdf:type practicas:OfertaPractica .
+            OPTIONAL { ?op practicas:descripcion ?descripcion }
+            OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
+            OPTIONAL { ?op practicas:titulo ?titulo }
+            OPTIONAL { ?op practicas:modalidad ?modalidad }
+            OPTIONAL { ?op practicas:ubicacionOferta ?ubicacionOferta }
+            OPTIONAL { ?op practicas:salario ?salario }
+            OPTIONAL { ?op practicas:requiereCompetencia ?allReq }
+
+            # Exclude opportunities that the user explicitly reacted against
+            FILTER NOT EXISTS { practicas:${userId} practicas:reaccionSobre ?op . }
+
+            # Exclude opportunities located in user's rejected locations unless modality is virtual
+            FILTER NOT EXISTS {
+                practicas:${userId} practicas:ubicacionRechazada ?badLoc .
+                FILTER( STR(?ubicacionOferta) = STR(?badLoc) && !(lcase(str(?modalidad)) = "virtual") )
+            }
+
+            ${salaryFilterClause}
+        }
+        GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
+        ORDER BY DESC(?op)
+        LIMIT ${Number(limit || 20)}
+        `;
+
+        const resPref = await sparqlQuery(prefQuery);
+        const rowsPref = (resPref && resPref.results && resPref.results.bindings) ? resPref.results.bindings : [];
+        return rowsPref.map(r => {
+            const rawReq = r.reqCompetencias ? r.reqCompetencias.value : null;
+            const reqArray = rawReq ? rawReq.split('|').map(s => s.trim()).filter(Boolean) : [];
+            const reqFrags = reqArray.map(u => { try { const parts = (u || '').split(/[#\/]/); return parts.length ? parts.pop() : u; } catch (e) { return u; } });
+            return {
+                opportunity: r.op ? r.op.value : null,
+                matches: 0,
+                requiereCompetencia: reqFrags,
+                titulo: r.titulo ? r.titulo.value : null,
+                descripcion: r.descripcion ? r.descripcion.value : null,
+                modalidad: r.modalidad ? r.modalidad.value : null,
+                ubicacionOferta: r.ubicacionOferta ? r.ubicacionOferta.value : null,
+                salario: r.salario ? r.salario.value : null,
+                nombreEmpresa: r.empresaName ? r.empresaName.value : null
+            };
+        });
+    }
     // Build SPARQL query; optionally exclude offers with zero matches using HAVING
     const havingClause = includeZeroMatches ? '' : 'HAVING (COUNT(DISTINCT ?matchCompetencia) > 0)';
 
@@ -21,7 +152,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     const locationExpr = escapedLoc ? `(IF(STR(?ubicacionOferta) = "${escapedLoc}", 1, 0) AS ?localMatch)` : '';
     const orderPrefix = escapedLoc ? 'DESC(?localMatch) ' : '';
 
-    const salaryFilterClause = salarioPrefValue ? `FILTER( BOUND(?salario) && xsd:decimal(?salario) >= xsd:decimal("${String(salarioPrefValue).replace(/"/g, '\"')}") )` : '';
+    
 
     const query = `
     PREFIX practicas: <http://www.unijob.edu/practicas#>

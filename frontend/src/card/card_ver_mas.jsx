@@ -95,7 +95,6 @@ export default function CardVerMas({
 					<p className="vermas-empresa">{nombreEmpresa}</p>
 				</div>
 				<div className="vermas-actions">
-					<button className="vermas-icon-btn like" title="Me gusta" aria-label="Me gusta" onClick={onLike}>👍</button>
 					<button className="vermas-icon-btn dislike" title="No me gusta" aria-label="No me gusta" onClick={handleDislikeClick}>👎</button>
 				</div>
 			</div>
