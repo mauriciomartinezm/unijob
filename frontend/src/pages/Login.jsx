@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext.jsx";
+import { Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import "../css/csspage/Login.css";
 import equipo from "../img/trabajoeuquipo.jpg";
@@ -24,6 +25,7 @@ export default function Login() {
         body: JSON.stringify(payload),
       });
       const body = await resp.json().catch(() => ({}));
+      console.log('Login response body:', body);
       if (!resp.ok) {
         setError(body.error || 'Credenciales inválidas');
         return;
@@ -116,11 +118,18 @@ export default function Login() {
             Iniciar Sesión
           </button>
 
+          {/* Mostrar mensajes de error (credenciales inválidas, usuario no registrado, etc.) */}
+          {error && (
+            <p className="login-error" role="alert" style={{ color: '#b00020', marginTop: '12px' }}>
+              {error}
+            </p>
+          )}
+
           <p className="register-text">
             ¿No tienes una cuenta?{" "}
-            <a href="#" className="register-link">
+            <Link to="/register" className="register-link">
               Regístrate aquí
-            </a>
+            </Link>
           </p>
         </div>
       </div>

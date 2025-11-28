@@ -80,6 +80,7 @@ export const register = async (req, res) => {
 
 // Login: check cedula + contrasena
 export const login = async (req, res) => {
+    console.log('login called with body:', req.body);
     try {
         const { cedula, contrasena } = req.body;
         if (!cedula || !contrasena) return res.status(400).json({ error: 'cedula y contrasena requeridos' });
@@ -89,6 +90,7 @@ export const login = async (req, res) => {
         const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nSELECT ?s ?hash WHERE { ?s practicas:cedula "${safeCedula}" . OPTIONAL { ?s practicas:contrasenaHash ?hash } } LIMIT 1`;
         const r = await sparqlQuery(q);
         const bindings = r && r.results && r.results.bindings ? r.results.bindings : [];
+        console.log('login query bindings:', bindings);
         if (bindings.length === 0) return res.status(401).json({ error: 'Credenciales inválidas' });
         const row = bindings[0];
         const stored = row.hash && row.hash.value ? row.hash.value : null;

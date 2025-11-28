@@ -22,6 +22,18 @@
         <practicas:nombreCarrera>Diseño Gráfico</practicas:nombreCarrera>
     </practicas:Carrera>
 
+    <practicas:Carrera rdf:about="http://www.unijob.edu/practicas#IngElectronica">
+        <practicas:nombreCarrera>Ingeniería Electrónica</practicas:nombreCarrera>
+    </practicas:Carrera>
+
+    <practicas:Carrera rdf:about="http://www.unijob.edu/practicas#Administracion">
+        <practicas:nombreCarrera>Administración de Empresas</practicas:nombreCarrera>
+    </practicas:Carrera>
+
+    <practicas:Carrera rdf:about="http://www.unijob.edu/practicas#Marketing">
+        <practicas:nombreCarrera>Marketing Digital</practicas:nombreCarrera>
+    </practicas:Carrera>
+
     <!-- ====================== -->
     <!-- COMPETENCIAS -->
     <!-- ====================== -->
@@ -58,38 +70,206 @@
         <practicas:nombreCompetencia>Redacción de Contenidos</practicas:nombreCompetencia>
     </practicas:Competencia>
 
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#NodeJS">
+        <practicas:nombreCompetencia>Node.js y backend</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#React">
+        <practicas:nombreCompetencia>React y bibliotecas frontend</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#Docker">
+        <practicas:nombreCompetencia>Contenedores y Docker</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#Testing">
+        <practicas:nombreCompetencia>Testing y QA</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#SEO">
+        <practicas:nombreCompetencia>SEO y Marketing de Contenidos</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#Photoshop">
+        <practicas:nombreCompetencia>Photoshop / Illustrator</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#GestionProyectos">
+        <practicas:nombreCompetencia>Gestión de Proyectos</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
+    <practicas:Competencia rdf:about="http://www.unijob.edu/practicas#MachineLearning">
+        <practicas:nombreCompetencia>Machine Learning básico</practicas:nombreCompetencia>
+    </practicas:Competencia>
+
 
     <!-- ====================== -->
-    <!-- ESTUDIANTES -->
+    <!-- ESTUDIANTES (datos de prueba extensos) -->
     <!-- ====================== -->
 
     <!-- Juan (sujeto identificado por cédula) -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20123456">
         <practicas:nombre>Juan Pérez</practicas:nombre>
-    <practicas:cedula>20123456</practicas:cedula>
-    <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+        <practicas:cedula>20123456</practicas:cedula>
+        <practicas:telefono>+57 300 1234567</practicas:telefono>
+        <practicas:universidad>Universidad Nacional</practicas:universidad>
+        <practicas:semestre>9</practicas:semestre>
+        <practicas:promedio>4.2</practicas:promedio>
+        <practicas:ubicacionPreferida>Bogotá</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>1200000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash1</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
     </practicas:Estudiante>
 
     <!-- Maria (sujeto identificado por cédula) -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20987654">
         <practicas:nombre>María Gómez</practicas:nombre>
-    <practicas:cedula>20987654</practicas:cedula>
-    <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+        <practicas:cedula>20987654</practicas:cedula>
+        <practicas:telefono>+57 310 7654321</practicas:telefono>
+        <practicas:universidad>Pontificia Universidad</practicas:universidad>
+        <practicas:semestre>6</practicas:semestre>
+        <practicas:promedio>4.5</practicas:promedio>
+        <practicas:ubicacionPreferida>Medellín</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Virtual</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>800000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash2</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
     </practicas:Estudiante>
 
     <!-- Carlos (sujeto identificado por cédula) -->
     <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20345678">
         <practicas:nombre>Carlos García</practicas:nombre>
-    <practicas:cedula>20345678</practicas:cedula>
-    <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
-    <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+        <practicas:cedula>20345678</practicas:cedula>
+        <practicas:telefono>+57 320 5557788</practicas:telefono>
+        <practicas:universidad>Universidad de la Ciudad</practicas:universidad>
+        <practicas:semestre>8</practicas:semestre>
+        <practicas:promedio>3.9</practicas:promedio>
+        <practicas:ubicacionPreferida>Bogotá</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>1000000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash3</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+    </practicas:Estudiante>
+
+    <!-- Additional test students to exercise recommender logic -->
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20456789">
+        <practicas:nombre>Ana Martínez</practicas:nombre>
+        <practicas:cedula>20456789</practicas:cedula>
+        <practicas:telefono>+57 311 4445566</practicas:telefono>
+        <practicas:universidad>Universidad Nacional</practicas:universidad>
+        <practicas:semestre>7</practicas:semestre>
+        <practicas:promedio>4.0</practicas:promedio>
+        <practicas:ubicacionPreferida>Bogotá</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Mixta</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>900000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash4</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20567890">
+        <practicas:nombre>Luis Torres</practicas:nombre>
+        <practicas:cedula>20567890</practicas:cedula>
+        <practicas:telefono>+57 315 2223344</practicas:telefono>
+        <practicas:universidad>Instituto Tecnológico</practicas:universidad>
+        <practicas:semestre>10</practicas:semestre>
+        <practicas:promedio>3.8</practicas:promedio>
+        <practicas:ubicacionPreferida>Cali</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>850000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash5</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20678901">
+        <practicas:nombre>Sofía López</practicas:nombre>
+        <practicas:cedula>20678901</practicas:cedula>
+        <practicas:telefono>+57 317 9988776</practicas:telefono>
+        <practicas:universidad>Universidad Creativa</practicas:universidad>
+        <practicas:semestre>5</practicas:semestre>
+        <practicas:promedio>4.7</practicas:promedio>
+        <practicas:ubicacionPreferida>Medellín</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Virtual</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>700000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash6</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20789012">
+        <practicas:nombre>Diego Ramírez</practicas:nombre>
+        <practicas:cedula>20789012</practicas:cedula>
+        <practicas:telefono>+57 318 1112233</practicas:telefono>
+        <practicas:universidad>Universidad Nacional</practicas:universidad>
+        <practicas:semestre>6</practicas:semestre>
+        <practicas:promedio>4.0</practicas:promedio>
+        <practicas:ubicacionPreferida>Bogotá</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>950000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash7</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#20890123">
+        <practicas:nombre>Paula Rojas</practicas:nombre>
+        <practicas:cedula>20890123</practicas:cedula>
+        <practicas:telefono>+57 319 3334455</practicas:telefono>
+        <practicas:universidad>Instituto Técnico</practicas:universidad>
+        <practicas:semestre>4</practicas:semestre>
+        <practicas:promedio>3.6</practicas:promedio>
+        <practicas:ubicacionPreferida>Cali</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>750000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash8</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngIndustrial"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#21011223">
+        <practicas:nombre>Mateo Suárez</practicas:nombre>
+        <practicas:cedula>21011223</practicas:cedula>
+        <practicas:telefono>+57 300 7778899</practicas:telefono>
+        <practicas:universidad>Universidad Nacional</practicas:universidad>
+        <practicas:semestre>8</practicas:semestre>
+        <practicas:promedio>4.8</practicas:promedio>
+        <practicas:ubicacionPreferida>Bogotá</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Presencial</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>1300000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash9</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#IngSistemas"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+    </practicas:Estudiante>
+
+    <practicas:Estudiante rdf:about="http://www.unijob.edu/practicas#21122334">
+        <practicas:nombre>Camila Duarte</practicas:nombre>
+        <practicas:cedula>21122334</practicas:cedula>
+        <practicas:telefono>+57 301 5566677</practicas:telefono>
+        <practicas:universidad>Universidad Creativa</practicas:universidad>
+        <practicas:semestre>3</practicas:semestre>
+        <practicas:promedio>4.1</practicas:promedio>
+        <practicas:ubicacionPreferida>Medellín</practicas:ubicacionPreferida>
+        <practicas:modalidadPreferida>Virtual</practicas:modalidadPreferida>
+        <practicas:salarioPreferido>650000</practicas:salarioPreferido>
+        <practicas:contrasenaHash>salt$hash10</practicas:contrasenaHash>
+        <practicas:perteneceACarrera rdf:resource="http://www.unijob.edu/practicas#DisenoGrafico"/>
+        <practicas:poseeCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
     </practicas:Estudiante>
 
 
@@ -109,6 +289,30 @@
         <practicas:nombreEmpresa>Creativa Studio</practicas:nombreEmpresa>
     </practicas:Empresa>
 
+    <practicas:Empresa rdf:about="http://www.unijob.edu/practicas#FintechLabs">
+        <practicas:nombreEmpresa>Fintech Labs</practicas:nombreEmpresa>
+        <practicas:sector>Finanzas / Tecnología</practicas:sector>
+        <practicas:ubicacionEmpresa>Bogotá</practicas:ubicacionEmpresa>
+    </practicas:Empresa>
+
+    <practicas:Empresa rdf:about="http://www.unijob.edu/practicas#MarketPlus">
+        <practicas:nombreEmpresa>MarketPlus</practicas:nombreEmpresa>
+        <practicas:sector>Marketing Digital</practicas:sector>
+        <practicas:ubicacionEmpresa>Medellín</practicas:ubicacionEmpresa>
+    </practicas:Empresa>
+
+    <practicas:Empresa rdf:about="http://www.unijob.edu/practicas#Innolab">
+        <practicas:nombreEmpresa>Innolab</practicas:nombreEmpresa>
+        <practicas:sector>Innovación</practicas:sector>
+        <practicas:ubicacionEmpresa>Cali</practicas:ubicacionEmpresa>
+    </practicas:Empresa>
+
+    <practicas:Empresa rdf:about="http://www.unijob.edu/practicas#AgenciaCreativa">
+        <practicas:nombreEmpresa>Agencia Creativa</practicas:nombreEmpresa>
+        <practicas:sector>Agencia / Publicidad</practicas:sector>
+        <practicas:ubicacionEmpresa>Bogotá</practicas:ubicacionEmpresa>
+    </practicas:Empresa>
+
 
     <!-- ====================== -->
     <!-- OPORTUNIDADES LABORALES -->
@@ -116,40 +320,121 @@
 
     <!-- Analista Datos -->
     <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#AnalistaDatos">
+        <practicas:titulo>Analista de Datos - Junior</practicas:titulo>
         <practicas:descripcion>Práctica como analista de datos junior</practicas:descripcion>
-    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#DataSoft"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>1200000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#DataSoft"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
     </practicas:OfertaPractica>
 
     <!-- Desarrollador Web -->
     <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DesarrolladorWeb">
+        <practicas:titulo>Desarrollador Web - Frontend</practicas:titulo>
         <practicas:descripcion>Práctica en desarrollo Frontend</practicas:descripcion>
-    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+        <practicas:modalidad>Mixta</practicas:modalidad>
+        <practicas:salario>1100000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#React"/>
     </practicas:OfertaPractica>
 
     <!-- Diseñador Junior -->
     <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DisenadorJunior">
+        <practicas:titulo>Diseñador UX/UI - Junior</practicas:titulo>
         <practicas:descripcion>Práctica en diseño UX/UI</practicas:descripcion>
-    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
+        <practicas:modalidad>Virtual</practicas:modalidad>
+        <practicas:salario>800000</practicas:salario>
+        <practicas:ubicacionOferta>Medellín</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Photoshop"/>
     </practicas:OfertaPractica>
 
     <!-- Auxiliar Procesos -->
     <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#AuxiliarProcesos">
+        <practicas:titulo>Auxiliar de Procesos</practicas:titulo>
         <practicas:descripcion>Práctica en gestión de procesos</practicas:descripcion>
-    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>900000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ModeladoProcesos"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#ExcelAvanzado"/>
     </practicas:OfertaPractica>
 
     <!-- Redactor Contenido -->
     <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#ContenidoDigital">
+        <practicas:titulo>Redactor de Contenido Digital</practicas:titulo>
         <practicas:descripcion>Práctica en creación de contenido digital</practicas:descripcion>
-    <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
-    <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+        <practicas:modalidad>Virtual</practicas:modalidad>
+        <practicas:salario>700000</practicas:salario>
+        <practicas:ubicacionOferta>Remoto</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SEO"/>
+    </practicas:OfertaPractica>
+
+    <!-- Nuevas ofertas para ampliar el corpus -->
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#BackendNode">
+        <practicas:titulo>Backend - Node.js</practicas:titulo>
+        <practicas:descripcion>Práctica en desarrollo backend con Node.js</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>1400000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#FintechLabs"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#NodeJS"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Docker"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#MarketingContenido">
+        <practicas:titulo>Marketing de Contenidos</practicas:titulo>
+        <practicas:descripcion>Práctica en marketing digital y creación de contenido</practicas:descripcion>
+        <practicas:modalidad>Virtual</practicas:modalidad>
+        <practicas:salario>750000</practicas:salario>
+        <practicas:ubicacionOferta>Medellín</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#MarketPlus"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SEO"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#UIUXIntern">
+        <practicas:titulo>UI/UX Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en diseño y prototipado</practicas:descripcion>
+        <practicas:modalidad>Mixta</practicas:modalidad>
+        <practicas:salario>800000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#AgenciaCreativa"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#DisenoUX"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Photoshop"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#MLIntern">
+        <practicas:titulo>Machine Learning Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en modelos y análisis de datos</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>1500000</practicas:salario>
+        <practicas:ubicacionOferta>Cali</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#Innolab"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#MachineLearning"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#FullstackIntern">
+        <practicas:titulo>Fullstack Intern</practicas:titulo>
+        <practicas:descripcion>Práctica fullstack (frontend + backend)</practicas:descripcion>
+        <practicas:modalidad>Mixta</practicas:modalidad>
+        <practicas:salario>1100000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#JavaScript"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#React"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#NodeJS"/>
     </practicas:OfertaPractica>
 
 </rdf:RDF>

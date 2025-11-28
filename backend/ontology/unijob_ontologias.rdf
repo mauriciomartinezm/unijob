@@ -97,6 +97,19 @@
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </owl:DatatypeProperty>
 
+  <!-- Salario y ubicación de la oferta -->
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#salario">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#OfertaPractica"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Cantidad o rango ofrecido por la oferta (guardar como literal)</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#ubicacionOferta">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#OfertaPractica"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Ubicación geográfica de la oferta (ciudad o remoto)</rdfs:comment>
+  </owl:DatatypeProperty>
+
   <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#nombreEmpresa">
     <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Empresa"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
@@ -194,6 +207,25 @@
     <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:comment>Hash de contraseña (scrypt) almacenado como salt$hash en hexadecimal</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <!-- Propiedades académicas del estudiante -->
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#universidad">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Nombre de la universidad del estudiante</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#semestre">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Semestre actual del estudiante (literal)</rdfs:comment>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://www.unijob.edu/practicas#promedio">
+    <rdfs:domain rdf:resource="http://www.unijob.edu/practicas#Estudiante"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment>Promedio académico (GPA) del estudiante</rdfs:comment>
   </owl:DatatypeProperty>
 
 </rdf:RDF>
