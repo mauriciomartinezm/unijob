@@ -1,9 +1,8 @@
 
-// URLs de Fuseki (defínelos en tu .env). Se proveen valores por defecto sensatos.
-const QUERY_URL = process.env.FUSEKI_QUERY_URL || 'http://localhost:3030/dataset/query';
-const UPDATE_URL = process.env.FUSEKI_UPDATE_URL || 'http://localhost:3030/dataset/update';
+const QUERY_URL = process.env.FUSEKI_QUERY_URL || 'http://167.172.194.95:3030/unijob/query';
+const UPDATE_URL = process.env.FUSEKI_UPDATE_URL || 'http://167.172.194.95:3030/unijob/update';
 
-// --- CONSULTAS (SELECT / CONSTRUCT / ASK) ---
+//Para consultas
 export async function sparqlQuery(query) {
     console.log("Ejecutando SPARQL QUERY:");
 
@@ -20,17 +19,15 @@ export async function sparqlQuery(query) {
         throw new Error(`Error en SPARQL QUERY: ${res.status} ${res.statusText}`);
     }
 
-    // Algunos endpoints devuelven JSON de resultados SPARQL; parsearlo.
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/sparql-results+json') || contentType.includes('application/json')) {
         return res.json();
     }
 
-    // Para CONSTRUCT/TURTLE podría venir texto; devolver como texto en ese caso.
     return res.text();
 }
 
-// --- ACTUALIZACIONES (INSERT / DELETE / UPDATE) ---
+//Para inserts, updates o delete
 export async function sparqlUpdate(updateBody) {
     console.log("Ejecutando SPARQL UPDATE:", updateBody);
 
@@ -48,11 +45,9 @@ export async function sparqlUpdate(updateBody) {
         throw new Error(`Error en SPARQL UPDATE: ${res.status} ${res.statusText} ${text}`);
     }
 
-    // Algunos endpoints no devuelven JSON; devolver true para mantener compatibilidad.
     return true;
 }
 
-// --- FUNCION OPCIONAL: TESTEAR CONEXIÓN (exportada, no ejecutada automáticamente) ---
 export async function testConnection() {
     try {
         const testQuery = `ASK WHERE { ?s ?p ?o }`;
