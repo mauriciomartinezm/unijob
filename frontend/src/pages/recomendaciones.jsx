@@ -13,28 +13,30 @@ export default function Recomendaciones() {
 
   const logoDefault = "/img/default-logo.png";
 
-  useEffect(() => {
-    const load = async () => {
-      if (!user || !user.cedula) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const resp = await fetch(`http://localhost:3001/api/recomendaciones/${encodeURIComponent(user.cedula)}/solicitar`);
-        if (!resp.ok) {
-          const body = await resp.json().catch(() => ({}));
-          throw new Error(body.error || 'Error fetching recomendaciones');
-        }
+  // fetch recommendations for the current user
+  const fetchRecs = async () => {
+    if (!user || !user.cedula) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await fetch(`http://localhost:3001/api/recomendaciones/${encodeURIComponent(user.cedula)}/solicitar`);
+      if (!resp.ok) {
         const body = await resp.json().catch(() => ({}));
-        const rows = Array.isArray(body.recommendations) ? body.recommendations : [];
-        setRecs(rows);
-      } catch (err) {
-        console.error('Error loading recomendaciones:', err);
-        setError(err.message || 'Error');
-      } finally {
-        setLoading(false);
+        throw new Error(body.error || 'Error fetching recomendaciones');
       }
-    };
-    load();
+      const body = await resp.json().catch(() => ({}));
+      const rows = Array.isArray(body.recommendations) ? body.recommendations : [];
+      setRecs(rows);
+    } catch (err) {
+      console.error('Error loading recomendaciones:', err);
+      setError(err.message || 'Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecs();
   }, [user]);
 
   return (
@@ -67,6 +69,7 @@ export default function Recomendaciones() {
               ofertaId={r.opportunity || r.op || null}
               requiereCompetencia={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
               competencias={Array.isArray(r.requiereCompetencia) ? r.requiereCompetencia : (r.requiereCompetencia ? [r.requiereCompetencia] : [])}
+              onDislike={fetchRecs}
             />
           ))}
         </div>
