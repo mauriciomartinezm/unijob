@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useUser } from "../context/UserContext.jsx";
-import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { IdCard, Lock, Eye, EyeOff, User } from "lucide-react";
 import "../css/csspage/register.css";
 import { useNavigate } from "react-router-dom";
 
@@ -123,7 +123,7 @@ export default function Register() {
 
         <label className="register-label">Cedula</label>
         <div className="register-input-group">
-          <Mail className="register-icon" />
+          <IdCard className="register-icon" />
           <input
             name="cedula"
             value={form.cedula}

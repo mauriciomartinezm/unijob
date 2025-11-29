@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext.jsx";
 import { Link } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Lock, Eye, EyeOff } from "lucide-react";
 import "../css/csspage/Login.css";
 import equipo from "../img/trabajoeuquipo.jpg";
+import logo2 from "../img/logo2.png";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -57,7 +58,9 @@ export default function Login() {
 
         <div className="login-left-text">
           <h1 className="login-logo">
-            <span className="logo-icon"></span> UniJob
+            <Link to="/" aria-label="Ir a inicio" className="login-logo-link">
+              <img src={logo2} alt="UniJob" className="login-logo-img" />
+            </Link>
           </h1>
 
           <h2>Tu Carrera Empieza Aquí.</h2>
@@ -72,7 +75,7 @@ export default function Login() {
 
           <label className="login-label">Cedula o Nombre de Usuario</label>
           <div className="input-group">
-            <Mail className="input-icon" />
+            <User className="input-icon" />
             <input
               type="text"
               placeholder="Ingresa tu cedula o usuario"

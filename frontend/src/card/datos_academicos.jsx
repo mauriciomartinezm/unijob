@@ -129,11 +129,22 @@ export default function DatosAcademicos({
         <button className="btn-actualizar" onClick={handleGuardar}>
           Guardar Cambios
         </button>
-        {status === 'loading' && <span className="status-msg">Guardando...</span>}
-        {status === 'no-user' && <span className="status-msg error">Debes iniciar sesión para actualizar.</span>}
-        {status && status.error && <span className="status-msg error">{status.error}</span>}
-        {status && status.ok && <span className="status-msg ok">{status.message}</span>}
+        {/* mensajes movidos al modal overlay */}
       </div>
+
+      {(status === 'loading' || status === 'no-user' || (status && (status.error || status.ok))) && (
+        <div className={`status-overlay ${status === 'loading' ? 'saving' : ''}`}> 
+          <div className="status-box" role="alert">
+            {status === 'loading' && <p className="status-text">Guardando...</p>}
+            {status === 'no-user' && <p className="status-text">Debes iniciar sesión para actualizar.</p>}
+            {status && status.error && <p className="status-text">{status.error}</p>}
+            {status && status.ok && <p className="status-text">{status.message}</p>}
+            {status !== 'loading' && (
+              <button className="status-close" onClick={() => setStatus(null)}>Cerrar</button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

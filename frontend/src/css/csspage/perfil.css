@@ -13,6 +13,7 @@
   box-sizing: border-box;
   font-family: sans-serif;
   animation: sectionFade 500ms ease both;
+  align-items: flex-start; /* evita que la derecha se estire a la altura de la izquierda */
 }
 
 @keyframes sectionFade { from{ opacity:0; transform: translateY(8px)} to{opacity:1; transform:none}}
@@ -26,7 +27,6 @@
   text-align: center;
   box-shadow: 0 10px 26px rgba(2,6,23,0.55);
   border: 1px solid rgba(255,255,255,0.08);
-  height: 100%;
   position: sticky;
   top: 20px;
 }
@@ -80,6 +80,7 @@
   border-radius: 15px;
   box-shadow: 0 10px 26px rgba(2,6,23,0.55);
   border: 1px solid rgba(255,255,255,0.08);
+  height: auto; /* asegura que su altura solo dependa de su contenido */
 }
 
 /* TABS */
@@ -189,6 +190,45 @@ textarea { height: 100px; resize: none }
   border: 4px solid #ffffff;
   box-shadow: 0px 8px 20px rgba(2,6,23,0.45);
 }
+
+/* ===== STATUS MODAL OVERLAY ===== */
+.status-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.65);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 16px;
+}
+.status-box {
+  min-width: 280px;
+  max-width: 360px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 16px 40px rgba(2,6,23,0.55);
+  border-radius: 18px;
+  padding: 28px 26px 24px;
+  text-align: center;
+  animation: cardPop 450ms cubic-bezier(.2,.9,.3,1);
+}
+.status-text { margin: 0 0 14px; font-size: 15px; font-weight: 600; color: var(--white); }
+.status-overlay.saving .status-text { animation: pulseSaving 1.4s ease-in-out infinite; }
+@keyframes pulseSaving { 0%,100%{opacity:.9} 50%{opacity:1} }
+.status-close {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border: none;
+  color: var(--white);
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.22);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.status-close:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(79,70,229,.28); }
 
 /* ================= RESPONSIVE BREAKPOINTS ================= */
 @media (max-width: 1200px) {

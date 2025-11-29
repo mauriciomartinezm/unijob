@@ -230,8 +230,19 @@ export default function MisCompetencias({ competencias, onUpdated }) {
               <button className="btn-actualizar" onClick={() => setShowModal(false)}>Cancelar</button>
               <button className="btn-actualizar" onClick={addSelected}>Añadir seleccionadas</button>
             </div>
-            {status && status.error && <div className="status error">{status.error}</div>}
-            {status && status.saving && <div className="status">Guardando...</div>}
+          </div>
+        </div>
+      )}
+
+      {(status && (status.saving || status.error || status.ok)) && (
+        <div className={`status-overlay ${status.saving ? 'saving' : ''}`}>
+          <div className="status-box" role="alert">
+            {status.saving && <p className="status-text">Guardando...</p>}
+            {status.error && <p className="status-text">{status.error}</p>}
+            {status.ok && <p className="status-text">Acción completada</p>}
+            {!status.saving && (
+              <button className="status-close" onClick={() => setStatus(null)}>Cerrar</button>
+            )}
           </div>
         </div>
       )}

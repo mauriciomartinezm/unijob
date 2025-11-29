@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../css/csscard/card_ver_mas.css";
 import placeholderLogo from "../assets/placeholder-logo.svg";
 import { useUser } from "../context/UserContext.jsx";
+import { MapPin, MonitorSmartphone, Wallet, ThumbsDown, Briefcase } from "lucide-react";
 
 
 export default function CardVerMas({
@@ -95,7 +96,9 @@ export default function CardVerMas({
 					<p className="vermas-empresa">{nombreEmpresa}</p>
 				</div>
 				<div className="vermas-actions">
-					<button className="vermas-icon-btn dislike" title="No me gusta" aria-label="No me gusta" onClick={handleDislikeClick}>👎</button>
+					<button className="vermas-icon-btn dislike" title="No me gusta" aria-label="No me gusta" onClick={handleDislikeClick}>
+						<ThumbsDown size={18} />
+					</button>
 				</div>
 			</div>
 
@@ -103,7 +106,7 @@ export default function CardVerMas({
 				{/* Ubicación */}
 				{ubicacion && (
 					<div className="vermas-row">
-						<span className="vermas-icon">📍</span>
+						<MapPin className="vermas-icon" />
 						<span className="vermas-text">{ubicacion}</span>
 					</div>
 				)}
@@ -111,7 +114,7 @@ export default function CardVerMas({
 				{/* Modalidad */}
 				{modalidad && (
 					<div className="vermas-row">
-						<span className="vermas-icon">🖥️</span>
+						<MonitorSmartphone className="vermas-icon" />
 						<span className="vermas-text">{modalidad}</span>
 					</div>
 				)}
@@ -119,7 +122,7 @@ export default function CardVerMas({
 				{/* Salario */}
 				{typeof salario !== 'undefined' && salario !== '' && (
 					<div className="vermas-row">
-						<span className="vermas-icon">💰</span>
+						<Wallet className="vermas-icon" />
 						<span className="vermas-text">{salario}</span>
 					</div>
 				)}

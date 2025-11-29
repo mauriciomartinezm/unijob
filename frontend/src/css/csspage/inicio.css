@@ -95,7 +95,7 @@
   color: var(--white);
   padding: 14px 22px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(16, 0, 245, 0.12);
   cursor: pointer;
   font-weight: 700;
   font-size: 16px;
@@ -105,8 +105,9 @@
 
 .hero-btnr:hover {
   transform: translateY(-3px);
+  color: white;
   background: rgba(255,255,255,0.12);
-  box-shadow: 0 12px 28px rgba(255,255,255,0.12);
+  box-shadow: 0 12px 28px rgba(84, 5, 211, 0.12);
 }
 
 /* NavLinks que actúan como botones */
