@@ -89,7 +89,7 @@ export default function Navbar() {
           <>
             <div style={{ position: "relative" }} ref={menuRef}>
               <div
-                className="user-circle user-circle-blue"
+                className="user-circle"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowMenu((s) => !s);

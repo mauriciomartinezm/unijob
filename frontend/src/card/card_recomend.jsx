@@ -2,6 +2,7 @@ import "../css/csscard/card_recomend.css";
 import placeholderLogo from "../assets/placeholder-logo.svg";
 import { useState } from "react";
 import CardVerMas from "./card_ver_mas.jsx";
+import { MapPin } from "lucide-react";
 
 export default function CardRecomendacion({
   titulo,
@@ -39,7 +40,7 @@ export default function CardRecomendacion({
 
         {/* UBICACIÓN */}
         <div className="reco-ubicacion">
-          <p>📍</p>
+          <MapPin className="reco-icon" size={16} />
           <p>{ubicacion}</p>
         </div>
         {/* MODALIDAD */}

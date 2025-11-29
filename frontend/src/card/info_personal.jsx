@@ -98,10 +98,22 @@ export default function InfoPersonal({ form, handleChange }) {
 
       <div className="btn-container">
         <button className="btn-actualizar" onClick={handleActualizar}>Actualizar perfil</button>
-        {status && status.saving && <span className="status-msg">Guardando...</span>}
-        {status && status.error && <span className="status-msg error">{status.error}</span>}
-        {status && status.ok && <span className="status-msg ok">{status.message}</span>}
+        {/* Mensajes movidos a modal overlay */}
       </div>
+
+      {/* Overlay modal para estados */}
+      {status && (status.saving || status.error || status.ok) && (
+        <div className={`status-overlay ${status.saving ? 'saving' : status.error ? 'error' : 'ok'}`}> 
+          <div className="status-box" role="alert">
+            {status.saving && <p className="status-text">Guardando...</p>}
+            {status.error && <p className="status-text">{status.error}</p>}
+            {status.ok && <p className="status-text">{status.message}</p>}
+            {(status.error || status.ok) && (
+              <button className="status-close" onClick={() => setStatus(null)}>Cerrar</button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

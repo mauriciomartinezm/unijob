@@ -24,7 +24,7 @@ export default function Footer() {
 					<ul className="footer-links">
 						<li><NavLink to="/" className="footer-link">Inicio</NavLink></li>
 						{logged && <li><NavLink to="/perfil" className="footer-link">Mi Perfil</NavLink></li>}
-						<li><NavLink to="/recomendaciones" className="footer-link">Recomendaciones</NavLink></li>
+						{logged && <li><NavLink to="/recomendaciones" className="footer-link">Recomendaciones</NavLink></li>}
 						{!logged && <li><NavLink to="/register" className="footer-link">Registrarse</NavLink></li>}
 						{!logged && <li><NavLink to="/login" className="footer-link">Iniciar Sesión</NavLink></li>}
 					</ul>

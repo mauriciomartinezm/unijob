@@ -116,7 +116,7 @@
 .user-circle {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #93c5fd, #3b82f6);
+  background: linear-gradient(135deg, var(--accent, #7c3aed), var(--accent2, #4f46e5));
   border-radius: 50%;
   cursor: pointer;
   transition: 0.25s ease;
@@ -125,11 +125,7 @@
 
 .user-circle:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.35);
-}
-
-.user-circle-blue {
-  background: #3b82f6;
+  box-shadow: 0 4px 10px rgba(124,58,237,0.45);
 }
 
 /* User menu dropdown */

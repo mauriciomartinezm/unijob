@@ -95,9 +95,18 @@ export default function Preferencias({
         <button className="btn-actualizar" onClick={handleGuardar}>Guardar Cambios</button>
       </div>
 
-      {status && status.saving && <div className="status">Guardando...</div>}
-      {status && status.error && <div className="status error">{status.error}</div>}
-      {status && status.ok && <div className="status ok">{status.message}</div>}
+      {(status && (status.saving || status.error || status.ok)) && (
+        <div className={`status-overlay ${status.saving ? 'saving' : ''}`}> 
+          <div className="status-box" role="alert">
+            {status.saving && <p className="status-text">Guardando...</p>}
+            {status.error && <p className="status-text">{status.error}</p>}
+            {status.ok && <p className="status-text">{status.message}</p>}
+            {!status.saving && (
+              <button className="status-close" onClick={() => setStatus(null)}>Cerrar</button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
