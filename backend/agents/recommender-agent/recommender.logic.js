@@ -32,6 +32,8 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     let salaryFilterClause = '';
     let selectSalaryNum = '';
     let salaryOrderClause = '';
+    // store a normalized base string for salary scoring when available
+    let salaryBaseStr = null;
     if (salarioPrefValue) {
         try {
             const raw = String(salarioPrefValue || '').replace(/[^0-9.\-]/g, '');
@@ -53,6 +55,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
                 // - ranks offers >= base first (priority 2), then within tolerance (1), then others (0)
                 // - within each priority orders by closeness to base (absolute difference)
                 salaryOrderClause = `DESC( IF( BOUND(?salarioNum) && ?salarioNum >= xsd:decimal("${baseStr}"), 2, IF( BOUND(?salarioNum) && ?salarioNum >= xsd:decimal("${minStr}") && ?salarioNum <= xsd:decimal("${maxStr}"), 1, 0) ) ) ASC(ABS(?salarioNum - xsd:decimal("${baseStr}"))) `;
+                salaryBaseStr = baseStr;
                 // Do not set a hard filter; allow recommendations above base as well.
                 salaryFilterClause = '';
             } else {
@@ -67,10 +70,33 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
 
     // Build modality ordering fragment: preferred modality first, then 'mixta', then others
     let modalidadOrderClause = '';
+    let prefModalLower = null;
     if (modalidadPrefValue) {
         const prefLower = String(modalidadPrefValue).toLowerCase().replace(/"/g, '\\"');
         modalidadOrderClause = `DESC( IF( lcase(str(?modalidad)) = "${prefLower}", 2, IF( lcase(str(?modalidad)) = "mixta", 1, 0 ) ) ) `;
+        prefModalLower = prefLower;
     }
+
+    // If preferredLocation is provided, precompute escapedLoc and ordering helpers early
+    const escapedLoc = preferredLocation ? String(preferredLocation).replace(/"/g, '\\"') : null;
+    const locationExpr = escapedLoc ? `(IF(STR(?ubicacionOferta) = "${escapedLoc}", 1, 0) AS ?localMatch)` : '';
+    const orderPrefix = escapedLoc ? 'DESC(?localMatch) ' : '';
+
+    // Build score component expressions to compute a combined score in SPARQL
+    // Competency score: matches / totalReq (0 if no required competencies)
+    const competencyScoreExpr = `(IF( BOUND(?totalReq) && xsd:decimal(?totalReq) > 0, (xsd:decimal(?matches) / xsd:decimal(?totalReq)), 0 ))`;
+    // Modalidad score: 1 = preferred, 0.5 = mixta, 0 = others
+    const modalidadScoreExpr = prefModalLower ? `IF( lcase(str(?modalidad)) = "${prefModalLower}", 1, IF( lcase(str(?modalidad)) = "mixta", 0.5, 0 ) )` : '0';
+    // Salary score: 1 if >= base, otherwise 1 - (base - salarioNum)/base, clamped to >=0
+    let salaryScoreExpr = '0';
+    if (salaryBaseStr) {
+        salaryScoreExpr = `IF( BOUND(?salarioNum), IF( ?salarioNum >= xsd:decimal("${salaryBaseStr}"), 1, IF( ?salarioNum > 0, IF( (1 - ((xsd:decimal("${salaryBaseStr}") - ?salarioNum) / xsd:decimal("${salaryBaseStr}"))) < 0, 0, (1 - ((xsd:decimal("${salaryBaseStr}") - ?salarioNum) / xsd:decimal("${salaryBaseStr}")) ) ), 0) ), 0)`;
+    }
+    // localMatch is provided by locationExpr as ?localMatch when escapedLoc set; default 0 otherwise
+    const localMatchExpr = escapedLoc ? 'IF( BOUND(?localMatch), ?localMatch, 0 )' : '0';
+    // Combined weighted score expression — restored to recommended weights:
+    // Competencias: 45% (0.45), Ubicación: 25% (0.25), Modalidad: 20% (0.20), Salario: 10% (0.10)
+    const combinedScoreExpr = `(( ${competencyScoreExpr} * 0.45 ) + ( ${localMatchExpr} * 0.25 ) + ( ${modalidadScoreExpr} * 0.20 ) + ( ${salaryScoreExpr} * 0.10 ))`;
 
     // Determine if the user has ANY competencias or explicit preferences recorded.
     // If the user has neither, consider them a first-time user and return all offers.
@@ -153,7 +179,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?op ${selectSalaryNum} (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
+    SELECT ?op ${selectSalaryNum} (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (COUNT(DISTINCT ?allReq) AS ?totalReq) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ${locationExpr} (${combinedScoreExpr} AS ?score) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
             OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
@@ -175,9 +201,13 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
             ${salaryFilterClause}
         }
     GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
-    ORDER BY ${modalidadOrderClause}${salaryOrderClause}DESC(?op)
+    ORDER BY DESC(?score) DESC(?matches) DESC(?op)
         LIMIT ${Number(limit || 20)}
         `;
+
+        // Do not restrict to preferredLocation only; the unrestricted prefQuery already
+        // includes a local-match component so local offers will be prioritized while
+        // keeping non-local offers in the result set.
 
         const resPref = await sparqlQuery(prefQuery);
         const rowsPref = (resPref && resPref.results && resPref.results.bindings) ? resPref.results.bindings : [];
@@ -187,7 +217,8 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
             const reqFrags = reqArray.map(u => { try { const parts = (u || '').split(/[#\/]/); return parts.length ? parts.pop() : u; } catch (e) { return u; } });
             return {
                 opportunity: r.op ? r.op.value : null,
-                matches: 0,
+                matches: r.matches ? Number(r.matches.value) : 0,
+                score: r.score ? Number(r.score.value) : null,
                 requiereCompetencia: reqFrags,
                 titulo: r.titulo ? r.titulo.value : null,
                 descripcion: r.descripcion ? r.descripcion.value : null,
@@ -201,10 +232,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     // Build SPARQL query; optionally exclude offers with zero matches using HAVING
     const havingClause = includeZeroMatches ? '' : 'HAVING (COUNT(DISTINCT ?matchCompetencia) > 0)';
 
-    // If preferredLocation is provided, compute a localMatch flag to prioritize local offers
-    const escapedLoc = preferredLocation ? String(preferredLocation).replace(/"/g, '\\"') : null;
-    const locationExpr = escapedLoc ? `(IF(STR(?ubicacionOferta) = "${escapedLoc}", 1, 0) AS ?localMatch)` : '';
-    const orderPrefix = escapedLoc ? 'DESC(?localMatch) ' : '';
+    // preferredLocation helpers (defined earlier)
 
     
 
@@ -213,7 +241,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?op ${selectSalaryNum} (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario ${locationExpr} WHERE {
+    SELECT ?op ${selectSalaryNum} (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (COUNT(DISTINCT ?allReq) AS ?totalReq) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ${locationExpr} (${combinedScoreExpr} AS ?score) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
             # candidate opportunities
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
@@ -255,10 +283,12 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         }
     GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
         ${havingClause}
-        ORDER BY ${modalidadOrderClause}${salaryOrderClause}${orderPrefix}DESC(?matches)
+        ORDER BY DESC(?score) DESC(?matches)
         LIMIT ${Number(limit || 20)}
     `;
 
+    // Always run the unrestricted query which includes ?localMatch in the combined score so
+    // local offers are prioritized but non-local offers remain present.
     const result = await sparqlQuery(query);
     console.log(`Recomendaciones generadas para usuario ${userId}:`, result);
     // result may be SPARQL JSON; normalize to friendly objects
@@ -277,6 +307,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         return {
             opportunity: r.op ? r.op.value : null,
             matches: r.matches ? Number(r.matches.value) : 0,
+            score: r.score ? Number(r.score.value) : null,
             requiereCompetencia: reqFrags,
             titulo: r.titulo ? r.titulo.value : null,
             descripcion: r.descripcion ? r.descripcion.value : null,
@@ -328,6 +359,8 @@ export async function generarYpersistirRecomendaciones(userId) {
         const r = rows[i];
         const opUri = r.opportunity || r.op || null;
         const matches = r.matches != null ? Number(r.matches) : (r.matches && r.matches.value ? Number(r.matches.value) : 0);
+        // prefer the computed score when available, otherwise fall back to matches
+        const scoreToPersist = (typeof r.score !== 'undefined' && r.score !== null && !Number.isNaN(Number(r.score))) ? Number(r.score) : matches;
         const descripcion = r.descripcion || r.descripcion || null;
 
         if (!opUri) continue;
@@ -340,11 +373,11 @@ export async function generarYpersistirRecomendaciones(userId) {
         // op reference: use full URI if it looks like one, otherwise assume fragment
         const opRef = opUri.startsWith('http') ? `<${opUri}>` : `practicas:${opUri}`;
 
-        insert += `  ${recUri} a practicas:Recomendacion ;\n`;
-        insert += `    practicas:recomendadaPara <${userUri}> ;\n`;
-        insert += `    practicas:recomienda ${opRef} ;\n`;
-        insert += `    practicas:score "${matches}"^^xsd:integer ;\n`;
-        insert += `    practicas:generatedAt "${new Date(ts).toISOString()}"^^xsd:dateTime .\n`;
+    insert += `  ${recUri} a practicas:Recomendacion ;\n`;
+    insert += `    practicas:recomendadaPara <${userUri}> ;\n`;
+    insert += `    practicas:recomienda ${opRef} ;\n`;
+    insert += `    practicas:score "${scoreToPersist}"^^xsd:decimal ;\n`;
+    insert += `    practicas:generatedAt "${new Date(ts).toISOString()}"^^xsd:dateTime .\n`;
         if (descripcion) {
             const esc = String(descripcion).replace(/"/g, '\\"');
             insert += `    ${recUri} practicas:descripcion "${esc}" .\n`;
