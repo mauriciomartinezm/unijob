@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 44.49 42.74">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Degradado_sin_nombre_66-3);
+      }
+
+      .cls-2 {
+        fill: url(#Degradado_sin_nombre_66-2);
+      }
+
+      .cls-3 {
+        fill: url(#Degradado_sin_nombre_66);
+      }
+    </style>
+    <linearGradient id="Degradado_sin_nombre_66" data-name="Degradado sin nombre 66" x1="13.06" y1="8.82" x2="31.45" y2="8.82" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="Degradado_sin_nombre_66-2" data-name="Degradado sin nombre 66" x1="26.1" y1="33.92" x2="44.49" y2="33.92" xlink:href="#Degradado_sin_nombre_66"/>
+    <linearGradient id="Degradado_sin_nombre_66-3" data-name="Degradado sin nombre 66" x1="0" y1="33.92" x2="18.39" y2="33.92" xlink:href="#Degradado_sin_nombre_66"/>
+  </defs>
+  <g id="Capa_2-2" data-name="Capa 2">
+    <ellipse class="cls-3" cx="22.26" cy="8.82" rx="9.19" ry="8.82"/>
+    <ellipse class="cls-2" cx="35.3" cy="33.92" rx="9.19" ry="8.82"/>
+    <path class="cls-1" d="M12.88,25.84c4.65,1.95,6.77,7.15,4.74,11.61s-7.46,6.5-12.11,4.54c-4.65-1.95-6.77-7.15-4.74-11.61,2.04-4.46,7.46-6.5,12.11-4.54Z"/>
+  </g>
+</svg>
