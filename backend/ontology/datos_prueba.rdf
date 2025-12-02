@@ -437,4 +437,88 @@
         <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#NodeJS"/>
     </practicas:OfertaPractica>
 
+    <!-- Additional offers: more positions from same companies and same locations -->
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DevOpsIntern">
+        <practicas:titulo>DevOps Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en automatización, CI/CD y operaciones cloud</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>1300000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#FintechLabs"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Docker"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#NodeJS"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#QAIntern">
+        <practicas:titulo>QA / Testing Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en aseguramiento de calidad y testing automatizado</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>900000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#TechCorp"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Testing"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#DataEngineerIntern">
+        <practicas:titulo>Data Engineer Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en pipelines de datos y ETL</practicas:descripcion>
+        <practicas:modalidad>Mixta</practicas:modalidad>
+        <practicas:salario>1400000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#DataSoft"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SQL"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Python"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#FinOpsIntern">
+        <practicas:titulo>FinOps Intern</practicas:titulo>
+        <practicas:descripcion>Práctica combinando finanzas y operaciones tecnológicas</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>1250000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#FintechLabs"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#AnalisisDatos"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#SocialMediaIntern">
+        <practicas:titulo>Social Media Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en gestión de redes sociales y creación de campañas</practicas:descripcion>
+        <practicas:modalidad>Virtual</practicas:modalidad>
+        <practicas:salario>750000</practicas:salario>
+        <practicas:ubicacionOferta>Medellín</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#MarketPlus"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#SEO"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#MotionDesigner">
+        <practicas:titulo>Motion Designer Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en animación y motion graphics</practicas:descripcion>
+        <practicas:modalidad>Virtual</practicas:modalidad>
+        <practicas:salario>850000</practicas:salario>
+        <practicas:ubicacionOferta>Medellín</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#CreativaStudio"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#Photoshop"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#FrontendReactIntern">
+        <practicas:titulo>Frontend React Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en desarrollo frontend con React</practicas:descripcion>
+        <practicas:modalidad>Mixta</practicas:modalidad>
+        <practicas:salario>1150000</practicas:salario>
+        <practicas:ubicacionOferta>Cali</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#Innolab"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#React"/>
+    </practicas:OfertaPractica>
+
+    <practicas:OfertaPractica rdf:about="http://www.unijob.edu/practicas#ContentStrategist">
+        <practicas:titulo>Content Strategist Intern</practicas:titulo>
+        <practicas:descripcion>Práctica en estrategia de contenidos y planificación</practicas:descripcion>
+        <practicas:modalidad>Presencial</practicas:modalidad>
+        <practicas:salario>800000</practicas:salario>
+        <practicas:ubicacionOferta>Bogotá</practicas:ubicacionOferta>
+        <practicas:empresa rdf:resource="http://www.unijob.edu/practicas#AgenciaCreativa"/>
+        <practicas:requiereCompetencia rdf:resource="http://www.unijob.edu/practicas#RedaccionContenido"/>
+    </practicas:OfertaPractica>
+
 </rdf:RDF>

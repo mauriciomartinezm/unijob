@@ -1,7 +1,7 @@
 import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 
-export async function generarRecomendaciones(userId, options = { includeZeroMatches: false, limit: 20, preferredLocation: null }) {
-    const { includeZeroMatches, limit, preferredLocation } = options || {};
+export async function generarRecomendaciones(userId, options = { includeZeroMatches: false, limit: 20, preferredLocation: null, salaryTolerance: 0.1 }) {
+    const { includeZeroMatches, limit, preferredLocation, salaryTolerance = 0.1 } = options || {};
     console.log(`Generando recomendaciones para usuario: ${userId} (includeZeroMatches=${includeZeroMatches}, preferredLocation=${preferredLocation})`);
     // Try to read user's salarioPreferido first so we can enforce minimum salary
     let salarioPrefValue = null;
@@ -14,9 +14,63 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         console.warn('No se pudo obtener salarioPreferido para usuario', userId, e);
     }
 
+    // Try to read user's modalidadPreferida so we can prioritize by modality
+    let modalidadPrefValue = null;
+    try {
+        const qModPref = `PREFIX practicas: <http://www.unijob.edu/practicas#> SELECT ?m WHERE { practicas:${userId} practicas:modalidadPreferida ?m } LIMIT 1`;
+        const rmp = await sparqlQuery(qModPref);
+        const bmp = rmp && rmp.results && rmp.results.bindings ? rmp.results.bindings : [];
+        if (bmp.length > 0 && bmp[0].m && bmp[0].m.value) modalidadPrefValue = bmp[0].m.value;
+    } catch (e) {
+        console.warn('No se pudo obtener modalidadPreferida para usuario', userId, e);
+    }
+
     // Build salary filter clause early so it can be used by the "preferences-only" path.
-    // Note: xsd prefix is added inside queries that use this clause.
-    const salaryFilterClause = salarioPrefValue ? `FILTER( BOUND(?salario) && xsd:decimal(?salario) >= xsd:decimal("${String(salarioPrefValue).replace(/"/g, '\\"')}") )` : '';
+    // New behavior: instead of requiring offers to be >= salarioPreferido, recommend offers around that salary
+    // using a tolerance (percentage). Default tolerance = 0.1 (±10%). Caller may override via options.salaryTolerance.
+    // We try to coerce the stored salarioPreferido to a numeric value (strip non-digits) before computing the window.
+    let salaryFilterClause = '';
+    let selectSalaryNum = '';
+    let salaryOrderClause = '';
+    if (salarioPrefValue) {
+        try {
+            const raw = String(salarioPrefValue || '').replace(/[^0-9.\-]/g, '');
+            const base = Number(raw);
+            if (!Number.isNaN(base)) {
+                const tol = (typeof salaryTolerance === 'number' && salaryTolerance >= 0) ? Number(salaryTolerance) : 0.1;
+                const minVal = (base * (1 - tol));
+                const maxVal = (base * (1 + tol));
+                // format without grouping, keep decimals if present
+                const minStr = String(Number(minVal.toFixed(2)));
+                const maxStr = String(Number(maxVal.toFixed(2)));
+                const baseStr = String(Number(base.toFixed(2)));
+                // We will not strictly filter by salary; instead compute a numeric aggregate and
+                // order by a salary-based priority: first offers >= base, then within tolerance,
+                // then lower ones ordered by distance to base. We still keep salaryFilterClause empty
+                // so that all offers are considered but prioritized.
+                selectSalaryNum = `(MAX(xsd:decimal(?salario)) AS ?salarioNum)`;
+                // Build an ORDER BY fragment (no trailing commas) that:
+                // - ranks offers >= base first (priority 2), then within tolerance (1), then others (0)
+                // - within each priority orders by closeness to base (absolute difference)
+                salaryOrderClause = `DESC( IF( BOUND(?salarioNum) && ?salarioNum >= xsd:decimal("${baseStr}"), 2, IF( BOUND(?salarioNum) && ?salarioNum >= xsd:decimal("${minStr}") && ?salarioNum <= xsd:decimal("${maxStr}"), 1, 0) ) ) ASC(ABS(?salarioNum - xsd:decimal("${baseStr}"))) `;
+                // Do not set a hard filter; allow recommendations above base as well.
+                salaryFilterClause = '';
+            } else {
+                // fallback: no filter if parsing failed
+                salaryFilterClause = '';
+            }
+        } catch (e) {
+            console.warn('Error construyendo salaryFilterClause por salarioPreferido:', e);
+            salaryFilterClause = '';
+        }
+    }
+
+    // Build modality ordering fragment: preferred modality first, then 'mixta', then others
+    let modalidadOrderClause = '';
+    if (modalidadPrefValue) {
+        const prefLower = String(modalidadPrefValue).toLowerCase().replace(/"/g, '\\"');
+        modalidadOrderClause = `DESC( IF( lcase(str(?modalidad)) = "${prefLower}", 2, IF( lcase(str(?modalidad)) = "mixta", 1, 0 ) ) ) `;
+    }
 
     // Determine if the user has ANY competencias or explicit preferences recorded.
     // If the user has neither, consider them a first-time user and return all offers.
@@ -94,12 +148,12 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     // a competencia match. This avoids returning zero results for users who only set prefs.
     if (cCount === 0 && pCount > 0) {
         // Build a query similar to the main one but without requiring the user to have a competencia
-        const prefQuery = `
-        PREFIX practicas: <http://www.unijob.edu/practicas#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    const prefQuery = `
+    PREFIX practicas: <http://www.unijob.edu/practicas#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-        SELECT ?op (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
+    SELECT ?op ${selectSalaryNum} (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario WHERE {
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
             OPTIONAL { ?op practicas:empresa ?empresa . ?empresa practicas:nombreEmpresa ?empresaName }
@@ -120,8 +174,8 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
 
             ${salaryFilterClause}
         }
-        GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
-        ORDER BY DESC(?op)
+    GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
+    ORDER BY ${modalidadOrderClause}${salaryOrderClause}DESC(?op)
         LIMIT ${Number(limit || 20)}
         `;
 
@@ -159,7 +213,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?op (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario ${locationExpr} WHERE {
+    SELECT ?op ${selectSalaryNum} (COUNT(DISTINCT ?matchCompetencia) AS ?matches) (GROUP_CONCAT(DISTINCT STR(?allReq); SEPARATOR="|") AS ?reqCompetencias) ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario ${locationExpr} WHERE {
             # candidate opportunities
             ?op rdf:type practicas:OfertaPractica .
             OPTIONAL { ?op practicas:descripcion ?descripcion }
@@ -201,7 +255,7 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
         }
     GROUP BY ?op ?titulo ?descripcion ?modalidad ?empresaName ?ubicacionOferta ?salario
         ${havingClause}
-        ORDER BY ${orderPrefix}DESC(?matches)
+        ORDER BY ${modalidadOrderClause}${salaryOrderClause}${orderPrefix}DESC(?matches)
         LIMIT ${Number(limit || 20)}
     `;
 

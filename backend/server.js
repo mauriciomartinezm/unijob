@@ -16,9 +16,6 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const PORT = process.env.PORT || 3001;
 
-// Configuración de CORS
-
-// Configuración del body parser para manejar las solicitudes JSON
 app.use(estudiantesRouter);
 app.use(carrerasRouter);
 app.use(ofertasRouter);
@@ -27,7 +24,6 @@ app.use(recomendacionesRouter);
 app.use(profileRouter);
 
 
-// Inicia el servidor
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
