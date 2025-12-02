@@ -1,4 +1,39 @@
 import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Helper to load weights from weights.json sitting next to this file.
+function loadWeights() {
+    try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        const p = path.join(__dirname, 'weights.json');
+        if (!fs.existsSync(p)) return null;
+        const raw = fs.readFileSync(p, 'utf8');
+        const parsed = JSON.parse(raw);
+        // ensure numeric values and fallback to defaults if missing
+        const defaults = { competency: 0.45, location: 0.25, modalidad: 0.20, salary: 0.10 };
+        const w = {
+            competency: typeof parsed.competency === 'number' ? parsed.competency : defaults.competency,
+            location: typeof parsed.location === 'number' ? parsed.location : defaults.location,
+            modalidad: typeof parsed.modalidad === 'number' ? parsed.modalidad : defaults.modalidad,
+            salary: typeof parsed.salary === 'number' ? parsed.salary : defaults.salary
+        };
+        // normalize to sum=1 (if total>0)
+        const total = (w.competency + w.location + w.modalidad + w.salary);
+        if (total > 0) {
+            w.competency = Number((w.competency / total).toFixed(6));
+            w.location = Number((w.location / total).toFixed(6));
+            w.modalidad = Number((w.modalidad / total).toFixed(6));
+            w.salary = Number((w.salary / total).toFixed(6));
+        }
+        return w;
+    } catch (e) {
+        console.warn('No se pudo cargar weights.json, usando valores por defecto', e);
+        return null;
+    }
+}
 
 export async function generarRecomendaciones(userId, options = { includeZeroMatches: false, limit: 20, preferredLocation: null, salaryTolerance: 0.1 }) {
     const { includeZeroMatches, limit, preferredLocation, salaryTolerance = 0.1 } = options || {};
@@ -94,9 +129,15 @@ export async function generarRecomendaciones(userId, options = { includeZeroMatc
     }
     // localMatch is provided by locationExpr as ?localMatch when escapedLoc set; default 0 otherwise
     const localMatchExpr = escapedLoc ? 'IF( BOUND(?localMatch), ?localMatch, 0 )' : '0';
-    // Combined weighted score expression — restored to recommended weights:
-    // Competencias: 45% (0.45), Ubicación: 25% (0.25), Modalidad: 20% (0.20), Salario: 10% (0.10)
-    const combinedScoreExpr = `(( ${competencyScoreExpr} * 0.45 ) + ( ${localMatchExpr} * 0.25 ) + ( ${modalidadScoreExpr} * 0.20 ) + ( ${salaryScoreExpr} * 0.10 ))`;
+    // Load dynamic weights from weights.json (next to this file). If missing or invalid,
+    // fall back to the recommended defaults. We normalize to ensure they sum to 1.
+    const weights = loadWeights() || { competency: 0.45, location: 0.25, modalidad: 0.20, salary: 0.10 };
+    const wComp = Number(weights.competency);
+    const wLoc = Number(weights.location);
+    const wMod = Number(weights.modalidad);
+    const wSal = Number(weights.salary);
+    // Combined weighted score expression using external weights
+    const combinedScoreExpr = `(( ${competencyScoreExpr} * ${wComp} ) + ( ${localMatchExpr} * ${wLoc} ) + ( ${modalidadScoreExpr} * ${wMod} ) + ( ${salaryScoreExpr} * ${wSal} ))`;
 
     // Determine if the user has ANY competencias or explicit preferences recorded.
     // If the user has neither, consider them a first-time user and return all offers.
