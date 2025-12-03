@@ -1,39 +1,67 @@
 import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 
-// Normalize salary-like strings to a plain numeric string (e.g. "$1,200.00" -> "1200.00").
-// Returns a string with up to 2 decimal places or null if parsing fails.
 function normalizeSalary(val) {
     try {
         if (typeof val === 'undefined' || val === null) return null;
         const raw = String(val).replace(/[^0-9.\-]/g, '');
         const n = Number(raw);
         if (!Number.isFinite(n)) return null;
-        // keep up to 2 decimals
         return String(Number(n.toFixed(2)));
     } catch (e) {
         return null;
     }
 }
+export async function updateUserPreferences(data) {
+    const { cedula } = data;
+    if (!cedula) throw new Error('cedula requerido');
+
+    const subjectRef = cedula.startsWith('http') ? `<${cedula}>` : `practicas:${String(cedula).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
+    if (typeof data.ubicacion !== 'undefined') {
+        // If ubicacion is an empty string (user selected the default 'Seleccione...'),
+        // remove the preference (DELETE only). Otherwise replace with the provided value.
+        const rawUb = data.ubicacion;
+        const trimmed = (rawUb === null || typeof rawUb === 'undefined') ? '' : String(rawUb).trim();
+        if (trimmed === '') {
+            const qdel = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:ubicacionPreferida ?old . }\nWHERE { OPTIONAL { ${subjectRef} practicas:ubicacionPreferida ?old . } }`;
+            await sparqlUpdate(qdel);
+        } else {
+            const safe = String(trimmed).replace(/"/g, '\\"');
+            const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:ubicacionPreferida ?old . }\nINSERT { ${subjectRef} practicas:ubicacionPreferida "${safe}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:ubicacionPreferida ?old . } }`;
+            await sparqlUpdate(q);
+        }
+    }
+
+    if (typeof data.modalidad !== 'undefined') {
+        const safe = String(data.modalidad).replace(/"/g, '\\"');
+        const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:modalidadPreferida ?old . }\nINSERT { ${subjectRef} practicas:modalidadPreferida "${safe}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:modalidadPreferida ?old . } }`;
+        await sparqlUpdate(q);
+    }
+
+    if (typeof data.salario !== 'undefined') {
+        // allow clearing the salarioPreferido by sending an empty string
+        const rawSal = data.salario;
+        const trimmedSal = (rawSal === null || typeof rawSal === 'undefined') ? '' : String(rawSal).trim();
+        if (trimmedSal === '') {
+            const qdel = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
+            await sparqlUpdate(qdel);
+        } else {
+            const normalized = normalizeSalary(trimmedSal);
+            const toPersist = normalized !== null ? normalized : String(trimmedSal).replace(/"/g, '\\"');
+            const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nINSERT { ${subjectRef} practicas:salarioPreferido "${toPersist}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
+            await sparqlUpdate(q);
+        }
+    }
+}
 
 /*
-data = {
-    userId: "estudiante123",
-    competencia: "ProgramacionWeb",
-    gusto: true   // true = le gusta / false = no le interesa
-}
-*/
-
 export async function updateUserPreference(data) {
-    // data may contain: { userId, competencia?, gusto?, motivo?, ofertaId? }
     const { userId } = data;
     if (!userId) throw new Error('userId requerido en updateUserPreference');
 
-    // Build subject reference (allow full URI or fragment)
     const subjectRef = userId.startsWith('http') ? `<${userId}>` : `practicas:${String(userId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
 
     const triples = [];
 
-    // If competencia provided, record it as a preference-like interaction
     if (data.competencia) {
         const safeComp = String(data.competencia).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
         triples.push(`${subjectRef} practicas:tienePreferencia practicas:${safeComp} .`);
@@ -44,20 +72,16 @@ export async function updateUserPreference(data) {
         triples.push(`${subjectRef} practicas:valorPreferencia "${String(val)}" .`);
     }
 
-    // Optional: persist a textual reason/motivo for the interaction (useful when user rejects a recommendation)
     if (data.motivo) {
         const safeMotivo = String(data.motivo).replace(/"/g, '\\"');
         triples.push(`${subjectRef} practicas:motivoInteraccion "${safeMotivo}" .`);
     }
 
-    // Optional: link the interaction to a specific oferta (recommendation) if provided
     if (data.ofertaId) {
         const safeOferta = String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
         triples.push(`${subjectRef} practicas:reaccionSobre practicas:${safeOferta} .`);
     }
 
-    // If the interaction references an oferta and the motivo indicates a location issue,
-    // persist the oferta's ubicacion as a rejected location for the user so recommender can exclude it.
     if (data.ofertaId && data.motivo && /ubic/i.test(String(data.motivo))) {
         try {
             const ofertaRef = data.ofertaId.startsWith('http') ? `<${data.ofertaId}>` : `practicas:${String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
@@ -73,14 +97,11 @@ export async function updateUserPreference(data) {
         }
     }
 
-    // If the interaction explicitly included a ubicacion field and it's a dislike, persist it
     if (data.ubicacion && typeof data.gusto !== 'undefined' && data.gusto === false) {
         const safeUb2 = String(data.ubicacion).replace(/"/g, '\\"');
         triples.push(`${subjectRef} practicas:ubicacionRechazada "${safeUb2}" .`);
     }
 
-    // If the user provided a salary in the interaction (or the motivo mentions salary and ofertaId present),
-    // persist it as the user's salarioPreferido (minimum acceptable salary).
     try {
         if (typeof data.salario !== 'undefined' && data.salario !== null && data.salario !== '') {
             const normalized = normalizeSalary(data.salario);
@@ -88,7 +109,6 @@ export async function updateUserPreference(data) {
             const qSal = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nINSERT { ${subjectRef} practicas:salarioPreferido "${toPersist}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
             await sparqlUpdate(qSal);
         } else if (data.ofertaId && data.motivo && /salari/i.test(String(data.motivo))) {
-            // try to query the oferta for its salario and persist that as salarioPreferido
             try {
                 const ofertaRef = data.ofertaId.startsWith('http') ? `<${data.ofertaId}>` : `practicas:${String(data.ofertaId).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
                 const q = `PREFIX practicas: <http://www.unijob.edu/practicas#> SELECT ?s WHERE { ${ofertaRef} practicas:salario ?s } LIMIT 1`;
@@ -109,36 +129,9 @@ export async function updateUserPreference(data) {
         console.error('Error al persistir salarioPreferido desde interaccion:', e);
     }
 
-    if (triples.length === 0) return; // nothing to persist
+    if (triples.length === 0) return;
 
     const update = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nINSERT DATA {\n${triples.join('\n')}\n}`;
     await sparqlUpdate(update);
-}
+}*/
 
-export async function updateUserPreferences(data) {
-    // data = { userId, ubicacion?, modalidad?, salario? }
-    const { cedula } = data;
-    if (!cedula) throw new Error('cedula requerido');
-
-    // Helper to build subject reference (allow full URI or fragment)
-    const subjectRef = cedula.startsWith('http') ? `<${cedula}>` : `practicas:${String(cedula).trim().replace(/[^a-zA-Z0-9_\-]/g, '_')}`;
-    // Persist each provided preference with a DELETE/INSERT pattern
-    if (typeof data.ubicacion !== 'undefined') {
-        const safe = String(data.ubicacion).replace(/"/g, '\\"');
-        const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:ubicacionPreferida ?old . }\nINSERT { ${subjectRef} practicas:ubicacionPreferida "${safe}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:ubicacionPreferida ?old . } }`;
-        await sparqlUpdate(q);
-    }
-
-    if (typeof data.modalidad !== 'undefined') {
-        const safe = String(data.modalidad).replace(/"/g, '\\"');
-        const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:modalidadPreferida ?old . }\nINSERT { ${subjectRef} practicas:modalidadPreferida "${safe}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:modalidadPreferida ?old . } }`;
-        await sparqlUpdate(q);
-    }
-
-    if (typeof data.salario !== 'undefined') {
-        const normalized = normalizeSalary(data.salario);
-        const toPersist = normalized !== null ? normalized : String(data.salario).replace(/"/g, '\\"');
-        const q = `PREFIX practicas: <http://www.unijob.edu/practicas#>\nDELETE { ${subjectRef} practicas:salarioPreferido ?old . }\nINSERT { ${subjectRef} practicas:salarioPreferido "${toPersist}" . }\nWHERE { OPTIONAL { ${subjectRef} practicas:salarioPreferido ?old . } }`;
-        await sparqlUpdate(q);
-    }
-}

@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { refreshRecommendations, solicitarRecomendacion } from '../controllers/recomendacionesController.js';
+import { //refreshRecommendations, 
+    solicitarRecomendacion } from '../controllers/recomendacionesController.js';
 
 const router = Router();
 
@@ -7,6 +8,6 @@ const router = Router();
 router.get('/api/recomendaciones/:id/solicitar', solicitarRecomendacion);
 
 // Ruta admin para forzar recálculo y persistencia de recomendaciones
-router.post('/api/recomendaciones/:id/refresh', refreshRecommendations);
+//router.post('/api/recomendaciones/:id/refresh', refreshRecommendations);
 
 export default router;

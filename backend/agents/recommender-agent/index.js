@@ -23,6 +23,7 @@ class RecommendAgent extends EventEmitter {
         });
 
         // Escuchar solicitudes para recalcular y persistir recomendaciones (desde API/admin)
+        /*
         this.on('solicitar_recalculo', async ({ userId, callback }) => {
             try {
                 console.log('🔁 Solicitud explícita de recalculo para', userId);
@@ -33,7 +34,7 @@ class RecommendAgent extends EventEmitter {
                 if (typeof callback === 'function') callback(err);
             }
         });
-
+        */
         // Escuchar eventos de actualización de perfil para recalcular recomendaciones
         try {
             perfilAgent.on('usuario_actualizado', async ({ userId }) => {

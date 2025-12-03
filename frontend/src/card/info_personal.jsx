@@ -1,10 +1,12 @@
 // src/componentes/info_personal.jsx
 import React, { useState } from "react";
 import { useUser } from "../context/UserContext.jsx";
+import ciudades from "../data/ciudades_colombia.json";
 
 export default function InfoPersonal({ form, handleChange }) {
   const { user, setUser } = useUser() || {};
   const [status, setStatus] = useState(null);
+  const [ubicaciones] = useState(ciudades || []);
 
   const handleActualizar = async () => {
     setStatus({ saving: true });
@@ -88,11 +90,12 @@ export default function InfoPersonal({ form, handleChange }) {
 
         <div>
           <label>Ubicación</label>
-          <input
-            name="ubicacion"
-            value={form.ubicacion}
-            onChange={handleChange}
-          />
+          <select name="ubicacion" value={form.ubicacion || ''} onChange={handleChange} className="input-small select-input">
+            <option value="">Seleccione una ubicación</option>
+            {ubicaciones.map((u, i) => (
+              <option key={i} value={u}>{u}</option>
+            ))}
+          </select>
         </div>
       </div>
 

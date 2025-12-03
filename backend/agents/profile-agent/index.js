@@ -1,12 +1,13 @@
 import EventEmitter from "events";
-import { updateUserPreference, updateUserPreferences } from "./profile.logic.js";
+import { //updateUserPreference, 
+    updateUserPreferences } from "./profile.logic.js";
 
 class PerfilAgent extends EventEmitter {
     constructor() {
         super();
         console.log("👤 PerfilAgent iniciado");
-
-        // Escuchar eventos del sistema
+        /*
+        // Escuchar eventos del sistema 
         this.on("nueva_interaccion", async (data) => {
             try {
                 console.log("📩 Evento recibido: nueva_interaccion", data);
@@ -24,7 +25,7 @@ class PerfilAgent extends EventEmitter {
                 console.error("❌ Error en PerfilAgent:", err);
             }
         });
-
+        */
         // Escuchar solicitudes para actualizar preferencias del usuario (ubicacion, modalidad, salario)
         this.on('actualizar_preferencias', async (data) => {
             try {
@@ -43,5 +44,4 @@ class PerfilAgent extends EventEmitter {
     }
 }
 
-// Exportar instancia lista para usar
 export const perfilAgent = new PerfilAgent();

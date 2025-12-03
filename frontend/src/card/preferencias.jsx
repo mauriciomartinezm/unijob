@@ -1,6 +1,7 @@
 import "../css/csscard/preferencias.css";
 import { useState } from "react";
 import { useUser } from "../context/UserContext.jsx";
+import ciudades from "../data/ciudades_colombia.json";
 
 export default function Preferencias({
   preferencias,
@@ -8,6 +9,7 @@ export default function Preferencias({
 }) {
   const { user } = useUser() || {};
   const [status, setStatus] = useState(null);
+  const [ubicaciones] = useState(ciudades || []);
 
   const handleGuardar = async () => {
     setStatus(null);
@@ -16,11 +18,12 @@ export default function Preferencias({
       return;
     }
 
-    // Build payload only with non-empty values
-    const payload = { cedula: user.cedula };
-    if (typeof preferencias.modalidad !== 'undefined' && String(preferencias.modalidad).trim() !== '') payload.modalidad = preferencias.modalidad;
-    if (typeof preferencias.salario !== 'undefined' && String(preferencias.salario).trim() !== '') payload.salario = preferencias.salario;
-    if (typeof preferencias.ubicacion !== 'undefined' && String(preferencias.ubicacion).trim() !== '') payload.ubicacion = preferencias.ubicacion;
+  // Build payload; include ubicacion and salario even if empty so backend can delete
+  // those preferences when the user clears the fields.
+  const payload = { cedula: user.cedula };
+  if (typeof preferencias.modalidad !== 'undefined' && String(preferencias.modalidad).trim() !== '') payload.modalidad = preferencias.modalidad;
+  if (typeof preferencias.salario !== 'undefined') payload.salario = preferencias.salario;
+  if (typeof preferencias.ubicacion !== 'undefined') payload.ubicacion = preferencias.ubicacion;
 
     // If only cedula present, nothing to do
     if (Object.keys(payload).length <= 1) {
@@ -82,12 +85,17 @@ export default function Preferencias({
       {/* UBICACIÓN */}
       <div className="form-section">
         <h3 className="section-title">Ubicación</h3>
-        <input
+        <select
           name="ubicacion"
           value={preferencias.ubicacion}
           onChange={handlePreferenciasChange}
-          className="input-small"
-        />
+          className="input-small select-input"
+        >
+          <option value="">Seleccione una ubicación</option>
+          {ubicaciones.map((u, i) => (
+            <option key={i} value={u}>{u}</option>
+          ))}
+        </select>
       </div>
 
       {/* BOTÓN */}

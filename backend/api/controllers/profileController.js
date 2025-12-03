@@ -2,7 +2,7 @@ import { sparqlQuery, sparqlUpdate } from "../../shared/fuseki-client.js";
 import { perfilAgent } from "../../agents/profile-agent/index.js";
 import crypto from 'crypto';
 
-
+/*
 export const createInteraction = async (req, res) => {
     console.log("createInteraction called");
     try {
@@ -15,7 +15,7 @@ export const createInteraction = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Error al registrar interacción" });
     }
-};
+};*/
 
 export const setPreferences = async (req, res) => {
     console.log('setPreferences called');
