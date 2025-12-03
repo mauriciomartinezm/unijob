@@ -32,7 +32,7 @@ class PerfilAgent extends EventEmitter {
                 await updateUserPreferences(data);
                 console.log('✅ Preferencias de usuario actualizadas');
                 try {
-                    if (data && data.cedula) this.emit('usuario_actualizado', { cedula: data.cedula });
+                    if (data && data.cedula) this.emit('usuario_actualizado', { userId: data.cedula });
                 } catch (e) {
                     console.error('Error emitiendo usuario_actualizado desde PerfilAgent (preferencias):', e);
                 }

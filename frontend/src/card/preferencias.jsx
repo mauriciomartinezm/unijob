@@ -63,8 +63,8 @@ export default function Preferencias({
         >
           <option value="">Seleccione una opción</option>
           <option value="presencial">Presencial</option>
-          <option value="remoto">Remoto</option>
-          <option value="hibrida">Híbrida</option>
+          <option value="virtual">Virtual</option>
+          <option value="mixta">Mixta</option>
         </select>
       </div>
 
