@@ -1,6 +1,7 @@
 import "../css/csscard/card_recomend.css";
 import placeholderLogo from "../assets/placeholder-logo.svg";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import CardVerMas from "./card_ver_mas.jsx";
 import { MapPin } from "lucide-react";
 
@@ -72,26 +73,29 @@ export default function CardRecomendacion({
           Ver más
         </button>
       </div>
-      {open && (
-        <div className="vermas-overlay" onClick={handleClose}>
-          <div className="vermas-modal" data-oferta-id={ofertaId || ''} onClick={(e) => e.stopPropagation()}>
-            <CardVerMas
-              titulo={titulo}
-              descripcion={descripcion}
-              ubicacion={ubicacion}
-              modalidad={modalidad}
-              nombreEmpresa={empresa}
-              ofertaId={ofertaId}
-              salario={salario}
-              requiereCompetencia={
-                competencias.length ? competencias : requiereCompetencia
-              }
-              onLike={onLike}
-              onDislike={onDislike}
-              onApply={handleClose}
-            />
+      {open && createPortal(
+        (
+          <div className="vermas-overlay" onClick={handleClose}>
+            <div className="vermas-modal" data-oferta-id={ofertaId || ''} onClick={(e) => e.stopPropagation()}>
+              <CardVerMas
+                titulo={titulo}
+                descripcion={descripcion}
+                ubicacion={ubicacion}
+                modalidad={modalidad}
+                nombreEmpresa={empresa}
+                ofertaId={ofertaId}
+                salario={salario}
+                requiereCompetencia={
+                  competencias.length ? competencias : requiereCompetencia
+                }
+                onLike={onLike}
+                onDislike={onDislike}
+                onApply={handleClose}
+              />
+            </div>
           </div>
-        </div>
+        ),
+        document.body
       )}
     </>
   );
