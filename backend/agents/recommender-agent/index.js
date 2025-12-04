@@ -22,19 +22,6 @@ class RecommendAgent extends EventEmitter {
             }
         });
 
-        // Escuchar solicitudes para recalcular y persistir recomendaciones (desde API/admin)
-        /*
-        this.on('solicitar_recalculo', async ({ userId, callback }) => {
-            try {
-                console.log('🔁 Solicitud explícita de recalculo para', userId);
-                const rows = await generarYpersistirRecomendaciones(userId);
-                if (typeof callback === 'function') callback(null, rows);
-            } catch (err) {
-                console.error('❌ Error en solicitar_recalculo:', err);
-                if (typeof callback === 'function') callback(err);
-            }
-        });
-        */
         // Escuchar eventos de actualización de perfil para recalcular recomendaciones
         try {
             perfilAgent.on('usuario_actualizado', async ({ userId }) => {
@@ -49,6 +36,20 @@ class RecommendAgent extends EventEmitter {
         } catch (e) {
             console.error('Error registrando listener usuario_actualizado en RecommendAgent:', e);
         }
+
+        // Escuchar solicitudes para recalcular y persistir recomendaciones (desde API/admin)
+        /*
+        this.on('solicitar_recalculo', async ({ userId, callback }) => {
+            try {
+                console.log('🔁 Solicitud explícita de recalculo para', userId);
+                const rows = await generarYpersistirRecomendaciones(userId);
+                if (typeof callback === 'function') callback(null, rows);
+            } catch (err) {
+                console.error('❌ Error en solicitar_recalculo:', err);
+                if (typeof callback === 'function') callback(err);
+            }
+        });
+        */
     }
 }
 
